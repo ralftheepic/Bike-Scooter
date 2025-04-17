@@ -1,25 +1,37 @@
-// backend/index.js (or server.js)
 import express from 'express';
 import cors from 'cors';
+import mongoose from 'mongoose';
 import connectDB from './config/db.js';
-import logger from './utils/logger.js'; // Assuming you have a logger
+import logger from './utils/logger.js';
 import productRoutes from './routes/productRoutes.js';
 import healthRoutes from './routes/health.js';
+import bulkOrderRoutes from './routes/bulkOrder.js';
 
 const app = express();
 const port = process.env.PORT || 5000;
 
+// Connect to MongoDB
 connectDB();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
+// Routes
+app.get('/', (req, res) => {
+  res.send('API is running...');
+});
+app.use('/health', healthRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/bulk-orders', bulkOrderRoutes); // <-- This is now correctly positioned
 
+// Start server
 const server = app.listen(port, () => {
   logger.info(`Server started on port ${port}`);
+  console.log(`Server running on port ${port}`);
 });
 
-// Handle graceful shutdown
+// Graceful shutdown
 process.on('SIGINT', gracefulShutdown);
 process.on('SIGTERM', gracefulShutdown);
 
@@ -37,17 +49,3 @@ async function gracefulShutdown() {
     process.exit(1);
   }
 }
-
-
-
-  // Log when the server is ready
-  app.get('/', (req, res) => {
-    res.send('API is running...');
-  });
-  app.use('/health', healthRoutes);
-    // Use the product routes for /api/products endpoint
-    app.use('/api/products', productRoutes);
-  
-    app.listen(port, () => {
-      console.log(`Server running on port ${port}`);
-    });

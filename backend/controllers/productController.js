@@ -1,5 +1,6 @@
 // backend/controllers/productController.js
 import Product from '../models/Product.js';
+import logger from '../utils/logger.js';
 
 const addProduct = async (req, res) => {
   console.log('Received request body:', req.body); // Log the request body

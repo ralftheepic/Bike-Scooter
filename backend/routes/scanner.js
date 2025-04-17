@@ -1,7 +1,7 @@
 // backend/routes/scanner.js
 const express = require('express');
 const router = express.Router();
-const Product = require('../models/product'); // Or your Bike/Scooter models
+const Product = require('../models/Product'); // Or your Bike/Scooter models
 const logger = require('../utils/logger'); // Assuming you have a logger
 
 // Route to fetch product details based on scanned productId
