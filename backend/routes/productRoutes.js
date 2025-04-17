@@ -1,26 +1,43 @@
 import express from 'express';
+import productController from '../controllers/productController.js'; // Ensure this is using ES import
+import logger from '../utils/logger.js'; // Import your logger
+
 const router = express.Router();
 
-// Example inventory (you’ll replace this with a real DB later)
-let inventory = [
-  { id: '123', name: 'Scooter A', description: 'Electric scooter', price: 1000, quantity: 5 },
-  { id: '456', name: 'Helmet', description: 'Protective helmet', price: 150, quantity: 10 },
-];
+// POST request to add a product
+router.post('/', async (req, res) => {
+  logger.info('Received POST request at /api/products', { body: req.body });
 
-router.get('/', (req, res) => {
-  res.json(inventory);
+  try {
+    await productController.addProduct(req, res); // Call your controller to add the product
+  } catch (error) {
+    logger.error('Error handling POST request to /api/products:', error); // Log errors with context
+    res.status(500).json({ message: 'Error adding product', error: error.message });
+  }
 });
 
-router.post('/scan', (req, res) => {
-  const { barcode, action } = req.body;
-  const product = inventory.find(p => p.id === barcode);
+// GET request to get all products
+router.get('/', async (req, res) => {
+  logger.info('Received GET request at /api/products');
 
-  if (!product) return res.status(404).json({ message: 'Product not found' });
-
-  if (action === 'sell') product.quantity -= 1;
-  else if (action === 'restock') product.quantity += 1;
-
-  res.json(product);
+  try {
+    await productController.getAllProducts(req, res); // Call your controller to get all products
+  } catch (error) {
+    logger.error('Error handling GET request to /api/products:', error); // Log errors with context
+    res.status(500).json({ message: 'Error fetching products', error: error.message });
+  }
 });
 
-export default router;
+// DELETE request to delete all products - USE WITH CAUTION
+router.delete('/', async (req, res) => {
+  logger.warn('Received DELETE request at /api/products - USE WITH EXTREME CAUTION!');
+
+  try {
+    await productController.deleteAllProducts(req, res); // Call your controller to delete all products
+  } catch (error) {
+    logger.error('Error handling DELETE request to /api/products:', error); // Log errors with context
+    res.status(500).json({ message: 'Error deleting all products', error: error.message });
+  }
+});
+
+export default router; // Default export for the router
