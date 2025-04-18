@@ -1,6 +1,8 @@
 import express from 'express';
 import productController from '../controllers/productController.js'; // Ensure this is using ES import
 import logger from '../utils/logger.js'; // Import your logger
+import Product from '../models/Product.js'; // <-- Add this line
+
 
 const router = express.Router();
 
@@ -39,5 +41,24 @@ router.delete('/', async (req, res) => {
     res.status(500).json({ message: 'Error deleting all products', error: error.message });
   }
 });
+
+// In routes/products.js or wherever your products API is
+router.put('/update-inventory', async (req, res) => {
+  try {
+    const updates = req.body; // array of { productId, quantity }
+
+    for (const { productId, quantity } of updates) {
+      await Product.findByIdAndUpdate(productId, {
+        $inc: { quantity: -quantity } // subtract the quantity
+      });
+    }
+
+    res.status(200).json({ message: 'Inventory updated successfully' });
+  } catch (error) {
+    console.error('Inventory update failed:', error);
+    res.status(500).json({ error: 'Failed to update inventory' });
+  }
+});
+
 
 export default router; // Default export for the router
