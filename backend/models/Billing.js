@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const billingItemSchema = new mongoose.Schema({
   productId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Product', // Assuming you have a Product model
+    ref: 'Product',
     required: true,
   },
   nameDescription: {
@@ -28,6 +28,10 @@ const billingSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    customerPhoneNumber: { // Added customer phone number field
+      type: String,
+      required: false, // Adjust to true if phone number is always required
+    },
     billingDate: {
       type: Date,
       required: true,
@@ -45,6 +49,6 @@ const billingSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Billing = mongoose.model('Billing', billingSchema,'billing');
+const Billing = mongoose.model('Billing', billingSchema, 'billing');
 
 export default Billing;

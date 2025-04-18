@@ -3,11 +3,12 @@
 import mongoose from 'mongoose';
 
 const productSchema = mongoose.Schema({
-  productId: { type: String, required: true, unique: true },
+  productId: { type: String, required: true },
   name: { type: String, required: true },
   brand: String,
   model: String,
-  category: { type: String, enum: ['bike', 'scooter'], required: true },
+  partNo: { type: Number, required: false },
+  category: { type: String, enum: ['bike', 'scooter','ALL'], required: true },
   price: { type: Number, required: true },  // Required
   quantity: { type: Number, required: true },
   description: String,
@@ -16,6 +17,6 @@ const productSchema = mongoose.Schema({
   timestamps: true,
 });
 
-const Product = mongoose.model('Product', productSchema, 'inventory');
+const Product = mongoose.model('Product', productSchema, 'products');
 
 export default Product;

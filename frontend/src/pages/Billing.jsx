@@ -10,6 +10,7 @@ const Billing = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [selectedProductIndex, setSelectedProductIndex] = useState(-1);
   const [customerName, setCustomerName] = useState('');
+  const [customerPhoneNumber, setCustomerPhoneNumber] = useState('');
   const [billingDate, setBillingDate] = useState('');
   const [isBillFinalized, setIsBillFinalized] = useState(false);
 
@@ -69,14 +70,18 @@ const Billing = () => {
         ? {
             ...item,
             productId: product._id,
-            nameDescription: nameDescription,
+            nameDescription: product.partNumber ? `${nameDescription} (Part No: ${product.partNumber})` : nameDescription,
             price: parseFloat(product.price),
+            name: product.name,
+            brand: product.brand,
+            model: product.model,
+            partNumber: product.partNumber,
           }
         : item
     );
     setBillingItems(updatedItems);
     setSuggestions([]);
-    setSearchTerm(nameDescription);
+    setSearchTerm('');
     setSelectedProductIndex(-1);
   };
 
@@ -96,16 +101,17 @@ const Billing = () => {
       setIsBillFinalized(true);
       const billData = {
         customerName,
+        customerPhoneNumber,
         billingDate,
         items: billingItems.map(item => ({
           productId: item.productId,
           nameDescription: item.nameDescription,
           price: item.price,
           quantity: item.quantity,
+          partNumber: item.partNumber,
         })),
         totalAmount,
       };
-      console.log('Final Bill Data:', billData);
       try {
         const response = await fetch('http://localhost:5000/api/bills', {
           method: 'POST',
@@ -115,17 +121,15 @@ const Billing = () => {
           body: JSON.stringify(billData),
         });
         if (response.ok) {
-          const savedBill = await response.json();
-          console.log('Bill saved successfully:', savedBill);
           alert('Bill finalized and saved successfully!');
         } else {
           const error = await response.json();
-          console.error('Failed to save bill:', error);
-          alert('Bill finalized, but failed to save.');
+          alert(`Bill finalized, but failed to save: ${error.message || 'Unknown error'}`);
+          setIsBillFinalized(false);
         }
       } catch (error) {
-        console.error('Error saving bill:', error);
         alert('Bill finalized, but an error occurred while saving.');
+        setIsBillFinalized(false);
       }
     } else {
       alert('Please add items and ensure customer name and date are filled.');
@@ -141,17 +145,41 @@ const Billing = () => {
     const pageWidth = doc.internal.pageSize.getWidth();
     const margin = 10;
     let y = margin;
+    const xRight = pageWidth - margin;
 
-    doc.setFontSize(20);
-    doc.text('Bill', margin, y);
-    y += 10;
-
+    // --- Business Details (Top Right) ---
     doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Shankar Automobile & Shankar Bike Garage', xRight, y, { align: 'right' });
+    y += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.text('Laxmi Avenue D, Global City', xRight, y, { align: 'right' });
+    y += 5;
+    doc.text('Virar West - 401303', xRight, y, { align: 'right' });
+    y += 5;
+    doc.text('9322516441', xRight, y, { align: 'right' });
+    y += 15; // Add some space after business details
+
+    // --- Bill Title (Center) ---
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    const billText = 'Bill';
+    const billTextWidth = doc.getTextWidth(billText);
+    const billX = (pageWidth - billTextWidth) / 2;
+    doc.text(billText, billX, y);
+    y += 15;
+
+    // --- Customer Details (Top Left) ---
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
     doc.text(`Customer Name: ${customerName}`, margin, y);
     y += 5;
     doc.text(`Billing Date: ${billingDate}`, margin, y);
+    y += 5;
+    doc.text(`Customer Phone: ${customerPhoneNumber}`, margin, y);
     y += 10;
 
+    // --- Table Headers ---
     const headers = ['Item No.', 'Name & Description', 'Price (₹)', 'Quantity', 'Total (₹)'];
     const colWidths = [15, 70, 20, 20, 25];
     let x = margin;
@@ -165,6 +193,7 @@ const Billing = () => {
     doc.line(margin, y, pageWidth - margin, y);
     y += 3;
 
+    // --- Table Data ---
     doc.setFont('helvetica', 'normal');
     billingItems.forEach((item) => {
       x = margin;
@@ -182,11 +211,26 @@ const Billing = () => {
     doc.line(margin, y, pageWidth - margin, y);
     y += 5;
 
+    // --- Total Amount ---
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
     doc.text(`Total Amount: ₹${totalAmount.toFixed(2)}`, margin, y);
 
     doc.save(`bill_${billingDate}_${customerName.replace(/\s+/g, '_')}.pdf`);
+  };
+
+  const handleNewBill = () => {
+    setBillingItems([]);
+    setNextItemNo(1);
+    setCustomerName('');
+    setCustomerPhoneNumber('');
+    setBillingDate(new Date().toISOString().slice(0, 10));
+    setTotalAmount(0);
+    setSearchTerm('');
+    setSuggestions([]);
+    setSelectedProductIndex(-1);
+    setIsBillFinalized(false);
+    fetchInventory();
   };
 
   return (
@@ -195,9 +239,7 @@ const Billing = () => {
 
       <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="customerName" className="block text-gray-700 text-sm font-bold mb-2">
-            Customer Name:
-          </label>
+          <label htmlFor="customerName" className="block text-gray-700 text-sm font-bold mb-2">Customer Name:</label>
           <input
             type="text"
             id="customerName"
@@ -207,9 +249,17 @@ const Billing = () => {
           />
         </div>
         <div>
-          <label htmlFor="billingDate" className="block text-gray-700 text-sm font-bold mb-2">
-            Billing Date:
-          </label>
+          <label htmlFor="customerPhoneNumber" className="block text-gray-700 text-sm font-bold mb-2">Customer Phone:</label>
+          <input
+            type="text"
+            id="customerPhoneNumber"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+            value={customerPhoneNumber}
+            onChange={(e) => setCustomerPhoneNumber(e.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="billingDate" className="block text-gray-700 text-sm font-bold mb-2">Billing Date:</label>
           <input
             type="date"
             id="billingDate"
@@ -220,23 +270,16 @@ const Billing = () => {
         </div>
       </div>
 
-      {!isBillFinalized ? (
+      {isBillFinalized ? (
         <div className="mb-4 flex gap-2">
-          <button onClick={addItem} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-            Add Item
-          </button>
-          <button onClick={handleFinalizeBill} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-            Finalize Bill
-          </button>
+          <button onClick={handlePrintBill} className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">Print Bill</button>
+          <button onClick={handleSaveAsPDF} className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">Save as PDF</button>
+          <button onClick={handleNewBill} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">New Bill</button>
         </div>
       ) : (
         <div className="mb-4 flex gap-2">
-          <button onClick={handlePrintBill} className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
-            Print Bill
-          </button>
-          <button onClick={handleSaveAsPDF} className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
-            Save as PDF
-          </button>
+          <button onClick={addItem} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Add Item</button>
+          <button onClick={handleFinalizeBill} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Finalize Bill</button>
         </div>
       )}
 
@@ -299,14 +342,13 @@ const Billing = () => {
           ) : (
             <p>No items added to the bill yet.</p>
           )}
-          <div className="mt-4 text-xl font-semibold">
-            Total Amount: ₹{totalAmount.toFixed(2)}
-          </div>
+          <div className="mt-4 text-xl font-semibold">Total Amount: ₹{totalAmount.toFixed(2)}</div>
         </div>
       ) : (
         <div className="overflow-x-auto mt-8">
           <h3 className="text-xl font-semibold mb-4">Final Bill</h3>
           <p>Customer Name: {customerName}</p>
+          <p>Customer Phone: {customerPhoneNumber}</p>
           <p>Billing Date: {billingDate}</p>
           <table className="min-w-full bg-white border border-gray-300 shadow-md rounded-lg">
             <thead className="bg-gray-100">
@@ -330,9 +372,7 @@ const Billing = () => {
               ))}
             </tbody>
           </table>
-          <div className="mt-4 text-xl font-semibold">
-            Total Amount: ₹{totalAmount.toFixed(2)}
-          </div>
+          <div className="mt-4 text-xl font-semibold">Total Amount: ₹{totalAmount.toFixed(2)}</div>
         </div>
       )}
     </div>

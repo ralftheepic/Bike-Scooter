@@ -6,6 +6,7 @@ import logger from './utils/logger.js';
 import productRoutes from './routes/productRoutes.js';
 import healthRoutes from './routes/health.js';
 import bulkOrderRoutes from './routes/bulkOrder.js';
+import billRoutes from './routes/bill.js';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -23,7 +24,8 @@ app.get('/', (req, res) => {
 });
 app.use('/health', healthRoutes);
 app.use('/api/products', productRoutes);
-app.use('/api/bulk-orders', bulkOrderRoutes); // <-- This is now correctly positioned
+app.use('/api/bulk-orders', bulkOrderRoutes); 
+app.use('/api/bills', billRoutes);
 
 // Start server
 const server = app.listen(port, () => {

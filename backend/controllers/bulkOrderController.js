@@ -5,63 +5,60 @@ import Product from '../models/Product.js';
 
 export const addBulkOrder = async (req, res) => {
   try {
+    console.log('test data ',req.body);
     const { distributorSource, receiptDate, totalBillAmount, items } = req.body;
     const bulkOrderItemsForDB = [];
 
     for (const item of items) {
       console.log('Received item:', item);
 
-      if (typeof item.price !== 'number' || isNaN(item.price)) {
+      if (typeof item.purchasePrice !== 'number' || isNaN(item.purchasePrice)) {
         return res.status(400).json({
-          message: `Missing or invalid 'price' for productId: ${item.productId}`,
+          message: `Missing or invalid 'price' for item with name: ${item.name}, brand: ${item.brand}, model: ${item.model}`,
         });
       }
 
-      let product;
+      // Search by name + brand + model instead of productId
+      let productDoc = await Product.findOne({
+        name: item.name,
+        brand: item.brand,
+        model: item.model,
+      });
 
-      const existingProduct = await Product.findOne({ productId: item.productId });
-
-      if (existingProduct) {
-        existingProduct.quantity += item.quantityReceived;
-        await existingProduct.save();
-        product = existingProduct._id;
+      if (productDoc) {
+        // Product exists, update quantity
+        productDoc.quantity += item.quantityReceived;
+        await productDoc.save();
       } else {
-        const newProduct = new Product({
-          productId: item.productId,
+        // Product doesn't exist, create new
+        productDoc = await Product.create({
+          productId: item.productId, // still storing it, but not using for uniqueness
           name: item.name,
           brand: item.brand,
           model: item.model,
           category: item.category,
           quantity: item.quantityReceived,
-          price: item.price, // Required
+          price: item.purchasePrice,
+          partNo: item.partNo || '', 
         });
-
-        const savedProduct = await newProduct.save();
-        product = savedProduct._id;
       }
 
       bulkOrderItemsForDB.push({
-        product,
-        productId: item.productId,
-        name: item.name,
-        brand: item.brand,
-        model: item.model,
-        category: item.category,
+        product: productDoc._id,
         quantityReceived: item.quantityReceived,
         purchasePrice: item.purchasePrice,
         price: item.price,
       });
     }
 
-    const newBulkOrder = new BulkOrder({
+    const newBulkOrder = await BulkOrder.create({
       distributorSource,
       receiptDate,
       totalBillAmount: parseFloat(totalBillAmount),
       items: bulkOrderItemsForDB,
     });
 
-    const savedBulkOrder = await newBulkOrder.save();
-    res.status(201).json(savedBulkOrder);
+    res.status(201).json(newBulkOrder);
   } catch (error) {
     console.error('Error adding bulk order:', error);
     res.status(500).json({ message: 'Failed to add bulk order', error: error.message });
