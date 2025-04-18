@@ -6,6 +6,7 @@
       "start:frontend": "cd frontend && npm run dev",
       "start:backend": "cd backend && npm run dev"
     },
+    "type": "module",
     "devDependencies": {
       "concurrently": "^8.2.2"
     }

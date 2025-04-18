@@ -13,6 +13,8 @@ const Billing = () => {
   const [customerPhoneNumber, setCustomerPhoneNumber] = useState('');
   const [billingDate, setBillingDate] = useState('');
   const [isBillFinalized, setIsBillFinalized] = useState(false);
+  const [currentDraftBillId, setCurrentDraftBillId] = useState(null);
+  const [draftBillsList, setDraftBillsList] = useState([]);
 
   const fetchInventory = async () => {
     try {
@@ -28,11 +30,116 @@ const Billing = () => {
     }
   };
 
+  const fetchDraftBills = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/bills?isDraft=true');
+      if (response.ok) {
+        const data = await response.json();
+        setDraftBillsList(data);
+      } else {
+        console.error('Failed to fetch draft bills');
+      }
+    } catch (error) {
+      console.error('Error fetching draft bills:', error);
+    }
+  };
+
   useEffect(() => {
     fetchInventory();
+    fetchDraftBills();
     const today = new Date().toISOString().slice(0, 10);
     setBillingDate(today);
   }, []);
+
+  const saveDraftBill = async () => {
+    const existingBill = draftBillsList.find(
+      (bill) =>
+        bill.customerName === customerName &&
+        bill.customerPhoneNumber === customerPhoneNumber &&
+        bill.billingDate === billingDate
+    );
+
+    const billData = {
+      customerName,
+      customerPhoneNumber,
+      billingDate,
+      items: billingItems.map(item => ({
+        productId: item.productId,
+        nameDescription: item.nameDescription,
+        price: item.price,
+        quantity: item.quantity,
+        partNumber: item.partNumber,
+      })),
+      totalAmount,
+      isDraft: true,
+    };
+
+    if (existingBill) {
+      try {
+        const response = await fetch(`http://localhost:5000/api/bills/${existingBill._id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(billData),
+        });
+
+        if (response.ok) {
+          alert(`Draft bill updated with ID: ${existingBill._id}`);
+          setCurrentDraftBillId(existingBill._id);
+          fetchDraftBills();
+        } else {
+          const error = await response.json();
+          alert(`Failed to update draft bill: ${error.message || 'Unknown error'}`);
+        }
+      } catch (error) {
+        alert('Error updating draft bill.');
+      }
+    } else {
+      try {
+        const response = await fetch('http://localhost:5000/api/bills', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(billData),
+        });
+
+        if (response.ok) {
+          const savedBill = await response.json();
+          alert(`Draft bill saved with ID: ${savedBill._id}`);
+          setCurrentDraftBillId(savedBill._id);
+          fetchDraftBills();
+        } else {
+          const error = await response.json();
+          alert(`Failed to save draft bill: ${error.message || 'Unknown error'}`);
+        }
+      } catch (error) {
+        alert('Error saving draft bill.');
+      }
+    }
+  };
+
+  const loadDraftBill = async (draftBillId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/bills/${draftBillId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setBillingItems(data.items.map((item, index) => ({ ...item, itemNo: index + 1 })));
+        setCustomerName(data.customerName);
+        setCustomerPhoneNumber(data.customerPhoneNumber || '');
+        setBillingDate(data.billingDate.slice(0, 10));
+        setTotalAmount(data.totalAmount);
+        setIsBillFinalized(false);
+        setCurrentDraftBillId(data._id);
+        setNextItemNo(data.items.length + 1);
+      } else {
+        alert('Failed to load draft bill.');
+      }
+    } catch (error) {
+      alert('Error loading draft bill.');
+    }
+  };
 
   const addItem = () => {
     const newItem = {
@@ -41,6 +148,7 @@ const Billing = () => {
       nameDescription: '',
       price: 0,
       quantity: 1,
+      partNumber: '',
     };
     setBillingItems([...billingItems, newItem]);
     setNextItemNo(nextItemNo + 1);
@@ -111,10 +219,14 @@ const Billing = () => {
           partNumber: item.partNumber,
         })),
         totalAmount,
+        isDraft: false,
       };
+      const apiUrl = currentDraftBillId ? `http://localhost:5000/api/bills/${currentDraftBillId}` : 'http://localhost:5000/api/bills';
+      const method = currentDraftBillId ? 'PUT' : 'POST';
+
       try {
-        const response = await fetch('http://localhost:5000/api/bills', {
-          method: 'POST',
+        const response = await fetch(apiUrl, {
+          method: method,
           headers: {
             'Content-Type': 'application/json',
           },
@@ -122,6 +234,9 @@ const Billing = () => {
         });
         if (response.ok) {
           alert('Bill finalized and saved successfully!');
+          setCurrentDraftBillId(null);
+          handleNewBill();
+          fetchDraftBills();
         } else {
           const error = await response.json();
           alert(`Bill finalized, but failed to save: ${error.message || 'Unknown error'}`);
@@ -147,7 +262,6 @@ const Billing = () => {
     let y = margin;
     const xRight = pageWidth - margin;
 
-    // --- Business Details (Top Right) ---
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
     doc.text('Shankar Automobile & Shankar Bike Garage', xRight, y, { align: 'right' });
@@ -158,223 +272,207 @@ const Billing = () => {
     doc.text('Virar West - 401303', xRight, y, { align: 'right' });
     y += 5;
     doc.text('9322516441', xRight, y, { align: 'right' });
-    y += 15; // Add some space after business details
-
-    // --- Bill Title (Center) ---
-    doc.setFontSize(20);
-    doc.setFont('helvetica', 'bold');
-    const billText = 'Bill';
-    const billTextWidth = doc.getTextWidth(billText);
-    const billX = (pageWidth - billTextWidth) / 2;
-    doc.text(billText, billX, y);
     y += 15;
 
-    // --- Customer Details (Top Left) ---
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'normal');
-    doc.text(`Customer Name: ${customerName}`, margin, y);
-    y += 5;
-    doc.text(`Billing Date: ${billingDate}`, margin, y);
-    y += 5;
-    doc.text(`Customer Phone: ${customerPhoneNumber}`, margin, y);
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    const billText = `Bill ID: ${currentDraftBillId} - ${customerName}`;
+    doc.text(billText, margin, y);
     y += 10;
 
-    // --- Table Headers ---
-    const headers = ['Item No.', 'Name & Description', 'Price (₹)', 'Quantity', 'Total (₹)'];
-    const colWidths = [15, 70, 20, 20, 25];
-    let x = margin;
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'bold');
-    headers.forEach((header, i) => {
-      doc.text(header, x, y);
-      x += colWidths[i];
-    });
-    y += 5;
-    doc.line(margin, y, pageWidth - margin, y);
-    y += 3;
-
-    // --- Table Data ---
-    doc.setFont('helvetica', 'normal');
-    billingItems.forEach((item) => {
-      x = margin;
-      doc.text(String(item.itemNo), x, y);
-      x += colWidths[0];
-      doc.text(item.nameDescription, x, y);
-      x += colWidths[1];
-      doc.text(item.price.toFixed(2), x, y);
-      x += colWidths[2];
-      doc.text(String(item.quantity), x, y);
-      x += colWidths[3];
-      doc.text((item.price * item.quantity).toFixed(2), x, y);
-      y += 5;
-    });
-    doc.line(margin, y, pageWidth - margin, y);
-    y += 5;
-
-    // --- Total Amount ---
     doc.setFontSize(12);
-    doc.setFont('helvetica', 'bold');
-    doc.text(`Total Amount: ₹${totalAmount.toFixed(2)}`, margin, y);
+    doc.text(`Billing Date: ${billingDate}`, margin, y);
+    y += 10;
+    doc.text(`Phone: ${customerPhoneNumber}`, margin, y);
+    y += 10;
 
-    doc.save(`bill_${billingDate}_${customerName.replace(/\s+/g, '_')}.pdf`);
+    doc.autoTable({
+      startY: y,
+      head: [['Item No', 'Product', 'Price', 'Quantity', 'Total']],
+      body: billingItems.map(item => [
+        item.itemNo,
+        item.nameDescription,
+        item.price.toFixed(2),
+        item.quantity,
+        (item.price * item.quantity).toFixed(2),
+      ]),
+    });
+
+    doc.text(`Total Amount: ₹${totalAmount.toFixed(2)}`, xRight, doc.lastAutoTable.finalY + 10, { align: 'right' });
+    doc.save(`bill-${currentDraftBillId}.pdf`);
   };
 
   const handleNewBill = () => {
     setBillingItems([]);
-    setNextItemNo(1);
+    setTotalAmount(0);
     setCustomerName('');
     setCustomerPhoneNumber('');
-    setBillingDate(new Date().toISOString().slice(0, 10));
-    setTotalAmount(0);
+    setBillingDate('');
+    setIsBillFinalized(false);
+    setNextItemNo(1);
     setSearchTerm('');
     setSuggestions([]);
-    setSelectedProductIndex(-1);
-    setIsBillFinalized(false);
-    fetchInventory();
+    setCurrentDraftBillId(null);
   };
 
   return (
-    <div className="container mx-auto py-8">
-      <h2 className="text-2xl font-semibold mb-4">Billing</h2>
-
-      <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="customerName" className="block text-gray-700 text-sm font-bold mb-2">Customer Name:</label>
-          <input
-            type="text"
-            id="customerName"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-            value={customerName}
-            onChange={(e) => setCustomerName(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="customerPhoneNumber" className="block text-gray-700 text-sm font-bold mb-2">Customer Phone:</label>
-          <input
-            type="text"
-            id="customerPhoneNumber"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-            value={customerPhoneNumber}
-            onChange={(e) => setCustomerPhoneNumber(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="billingDate" className="block text-gray-700 text-sm font-bold mb-2">Billing Date:</label>
-          <input
-            type="date"
-            id="billingDate"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-            value={billingDate}
-            onChange={(e) => setBillingDate(e.target.value)}
-          />
-        </div>
+    <div className="p-4">
+      <h1 className="text-2xl font-bold">Billing</h1>
+      <div className="mt-4">
+        <label className="block">Customer Name:</label>
+        <input
+          type="text"
+          value={customerName}
+          onChange={(e) => setCustomerName(e.target.value)}
+          className="w-full py-2 px-3 mb-4 border rounded"
+          placeholder="Enter customer name"
+          disabled={isBillFinalized}
+        />
+        <label className="block">Customer Phone:</label>
+        <input
+          type="text"
+          value={customerPhoneNumber}
+          onChange={(e) => setCustomerPhoneNumber(e.target.value)}
+          className="w-full py-2 px-3 mb-4 border rounded"
+          placeholder="Enter customer phone"
+          disabled={isBillFinalized}
+        />
+        <label className="block">Billing Date:</label>
+        <input
+          type="date"
+          value={billingDate}
+          onChange={(e) => setBillingDate(e.target.value)}
+          className="w-full py-2 px-3 mb-4 border rounded"
+          disabled={isBillFinalized}
+        />
+      </div>
+      <div className="mt-4">
+        <button
+          className="bg-blue-500 text-white py-2 px-4 rounded mb-4"
+          onClick={addItem}
+          disabled={isBillFinalized}
+        >
+          Add Item
+        </button>
+        <button
+          className="bg-green-500 text-white py-2 px-4 rounded mb-4 ml-4"
+          onClick={saveDraftBill}
+          disabled={isBillFinalized}
+        >
+          Save Draft Bill
+        </button>
       </div>
 
-      {isBillFinalized ? (
-        <div className="mb-4 flex gap-2">
-          <button onClick={handlePrintBill} className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">Print Bill</button>
-          <button onClick={handleSaveAsPDF} className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">Save as PDF</button>
-          <button onClick={handleNewBill} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">New Bill</button>
-        </div>
-      ) : (
-        <div className="mb-4 flex gap-2">
-          <button onClick={addItem} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Add Item</button>
-          <button onClick={handleFinalizeBill} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Finalize Bill</button>
-        </div>
-      )}
-
-      {!isBillFinalized ? (
-        <div className="overflow-x-auto mt-8">
-          <h3 className="text-xl font-semibold mb-4">Billing Items</h3>
-          {billingItems.length > 0 ? (
-            <table className="min-w-full bg-white border border-gray-300 shadow-md rounded-lg">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="py-3 px-4 border-b">Item No.</th>
-                  <th className="py-3 px-4 border-b">Name & Description</th>
-                  <th className="py-3 px-4 border-b">Price (₹)</th>
-                  <th className="py-3 px-4 border-b">Quantity</th>
-                  <th className="py-3 px-4 border-b">Total (₹)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {billingItems.map((item, index) => (
-                  <tr key={index} className="hover:bg-gray-50">
-                    <td className="py-2 px-4 border-b">{item.itemNo}</td>
-                    <td className="py-2 px-4 border-b relative">
-                      <input
-                        type="text"
-                        className="w-full border rounded px-3 py-2"
-                        value={item.nameDescription}
-                        onChange={(e) => handleInputChange(index, e.target.value)}
-                        onFocus={() => setSelectedProductIndex(index)}
-                        onBlur={() => setTimeout(() => setSuggestions([]), 150)}
-                      />
-                      {selectedProductIndex === index && suggestions.length > 0 && (
-                        <ul className="absolute z-10 bg-white border border-gray-300 rounded shadow-md mt-1 w-full">
-                          {suggestions.map((product) => (
-                            <li
-                              key={product._id}
-                              className="py-2 px-4 hover:bg-gray-100 cursor-pointer"
-                              onMouseDown={() => handleSuggestionClick(index, product)}
-                            >
-                              {product.name} {product.brand ? `(${product.brand})` : ''} {product.model ? `[${product.model}]` : ''} - ₹{product.price}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </td>
-                    <td className="py-2 px-4 border-b">₹{item.price.toFixed(2)}</td>
-                    <td className="py-2 px-4 border-b">
-                      <input
-                        type="number"
-                        className="w-24 border rounded px-2 py-1"
-                        value={item.quantity}
-                        onChange={(e) => handleQuantityChange(index, e.target.value)}
-                        min="1"
-                      />
-                    </td>
-                    <td className="py-2 px-4 border-b">₹{(item.price * item.quantity).toFixed(2)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>No items added to the bill yet.</p>
-          )}
-          <div className="mt-4 text-xl font-semibold">Total Amount: ₹{totalAmount.toFixed(2)}</div>
-        </div>
-      ) : (
-        <div className="overflow-x-auto mt-8">
-          <h3 className="text-xl font-semibold mb-4">Final Bill</h3>
-          <p>Customer Name: {customerName}</p>
-          <p>Customer Phone: {customerPhoneNumber}</p>
-          <p>Billing Date: {billingDate}</p>
-          <table className="min-w-full bg-white border border-gray-300 shadow-md rounded-lg">
-            <thead className="bg-gray-100">
+      {billingItems.length > 0 && (
+        <div className="mt-4">
+          <table className="w-full table-auto">
+            <thead>
               <tr>
-                <th className="py-3 px-4 border-b">Item No.</th>
-                <th className="py-3 px-4 border-b">Name & Description</th>
-                <th className="py-3 px-4 border-b">Price (₹)</th>
-                <th className="py-3 px-4 border-b">Quantity</th>
-                <th className="py-3 px-4 border-b">Total (₹)</th>
+                <th className="px-4 py-2">Item No.</th>
+                <th className="px-4 py-2">Product</th>
+                <th className="px-4 py-2">Price</th>
+                <th className="px-4 py-2">Quantity</th>
+                <th className="px-4 py-2">Total</th>
+                <th className="px-4 py-2">Action</th>
               </tr>
             </thead>
             <tbody>
-              {billingItems.map((item) => (
-                <tr key={item.itemNo} className="hover:bg-gray-50">
-                  <td className="py-2 px-4 border-b">{item.itemNo}</td>
-                  <td className="py-2 px-4 border-b">{item.nameDescription}</td>
-                  <td className="py-2 px-4 border-b">₹{item.price.toFixed(2)}</td>
-                  <td className="py-2 px-4 border-b">{item.quantity}</td>
-                  <td className="py-2 px-4 border-b">₹{(item.price * item.quantity).toFixed(2)}</td>
+              {billingItems.map((item, index) => (
+                <tr key={index}>
+                  <td className="px-4 py-2">{item.itemNo}</td>
+                  <td className="px-4 py-2">
+                    <input
+                      type="text"
+                      value={item.nameDescription}
+                      onChange={(e) => handleInputChange(index, e.target.value)}
+                      placeholder="Enter product"
+                      className="w-full py-1 px-2 mb-2 border rounded"
+                      disabled={isBillFinalized}
+                    />
+                    {selectedProductIndex === index && (
+                      <ul className="absolute bg-white border rounded w-full z-10">
+                        {suggestions.map((product) => (
+                          <li
+                            key={product._id}
+                            onClick={() => handleSuggestionClick(index, product)}
+                            className="p-2 cursor-pointer hover:bg-gray-200"
+                          >
+                            {`${product.name} ${product.brand} ${product.model}`}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </td>
+                  <td className="px-4 py-2">{item.price}</td>
+                  <td className="px-4 py-2">
+                    <input
+                      type="number"
+                      value={item.quantity}
+                      onChange={(e) => handleQuantityChange(index, e.target.value)}
+                      className="w-12"
+                      disabled={isBillFinalized}
+                    />
+                  </td>
+                  <td className="px-4 py-2">{(item.price * item.quantity).toFixed(2)}</td>
+                  <td className="px-4 py-2">
+                    <button
+                      onClick={() => removeItem(index)}
+                      className="text-red-500 hover:text-red-700"
+                      disabled={isBillFinalized}
+                    >
+                      Remove
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <div className="mt-4 text-xl font-semibold">Total Amount: ₹{totalAmount.toFixed(2)}</div>
+          <div className="mt-4">
+            <span className="font-bold">Total Amount: ₹{totalAmount.toFixed(2)}</span>
+          </div>
         </div>
       )}
+
+      <div className="mt-4">
+        <button
+          className="bg-blue-500 text-white py-2 px-4 rounded mb-4"
+          onClick={handleFinalizeBill}
+          disabled={isBillFinalized}
+        >
+          Finalize Bill
+        </button>
+        <button
+          className="bg-yellow-500 text-white py-2 px-4 rounded mb-4 ml-4"
+          onClick={handlePrintBill}
+          disabled={isBillFinalized}
+        >
+          Print Bill
+        </button>
+        <button
+          className="bg-purple-500 text-white py-2 px-4 rounded mb-4 ml-4"
+          onClick={handleSaveAsPDF}
+          disabled={isBillFinalized}
+        >
+          Save as PDF
+        </button>
+      </div>
+
+      <div className="mt-4">
+        <h2 className="text-xl">Draft Bills</h2>
+        <ul>
+          {draftBillsList.map((bill) => (
+            <li key={bill._id} className="flex justify-between items-center">
+              <span>{`Bill ID: ${bill._id} - ${bill.customerName} - ₹${bill.totalAmount.toFixed(2)}`}</span>
+              <button
+                onClick={() => loadDraftBill(bill._id)}
+                className="bg-gray-500 text-white py-1 px-2 rounded"
+              >
+                Load
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

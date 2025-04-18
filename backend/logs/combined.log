@@ -600,3 +600,240 @@
 {"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 10:45:07"}
 {"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 10:45:07"}
 {"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 10:45:07"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 11:26:03"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 11:33:20"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 11:35:47"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 12:00:41"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 12:00:41"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 12:00:41"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 12:00:41"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 12:00:41"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 12:00:41"}
+{"level":"info","message":"Shutting down server...","timestamp":"2025-04-18 12:19:20"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 12:19:23"}
+{"level":"info","message":"Shutting down server...","timestamp":"2025-04-18 13:32:23"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 13:32:27"}
+{"level":"info","message":"Shutting down server...","timestamp":"2025-04-18 13:34:26"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 13:34:30"}
+{"level":"info","message":"Shutting down server...","timestamp":"2025-04-18 13:39:02"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 13:39:16"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 13:39:59"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 13:39:59"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 13:39:59"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 13:41:35"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 13:41:35"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 13:41:35"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 13:41:35"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 13:41:35"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 13:41:35"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 13:42:45"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 13:42:45"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 13:42:45"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 13:42:54"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 13:42:54"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 13:42:54"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 13:42:54"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 13:42:54"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 13:42:54"}
+{"level":"info","message":"Shutting down server...","timestamp":"2025-04-18 13:46:35"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 13:46:39"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 13:48:52"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 13:48:52"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 13:48:52"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 13:48:52"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 13:48:52"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 13:48:52"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 14:01:34"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 14:03:27"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 14:03:31"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:05:22"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:05:22"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:05:22"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:05:22"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:05:22"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:05:22"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:05:30"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:05:30"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:05:30"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:05:31"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:05:31"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:05:31"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:05:50"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:05:50"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:05:50"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:07:18"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:07:18"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:07:18"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:07:23"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:07:23"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:07:23"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:07:23"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:07:23"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:07:23"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:07:41"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:07:41"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:07:41"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:08:46"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:08:46"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:08:46"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:11:16"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:11:16"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:11:16"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:11:20"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:11:20"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:11:20"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:11:20"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:11:20"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:11:20"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:11:54"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:11:54"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:11:54"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:12:15"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:12:15"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:12:15"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 14:18:02"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 14:18:09"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 14:22:35"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 14:22:46"}
+{"level":"info","message":"Shutting down server...","timestamp":"2025-04-18 14:23:35"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 14:23:38"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:34:53"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:34:53"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:34:53"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:34:53"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:34:53"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:34:53"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:39:41"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:39:41"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:39:41"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:41:22"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:41:22"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:41:22"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:41:37"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:41:37"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:41:37"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:44:31"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:44:31"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:44:31"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:44:38"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:44:38"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:44:38"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:44:38"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:44:38"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:44:38"}
+{"_message":"Billing validation failed","errors":{"items.1.nameDescription":{"kind":"required","message":"Path `nameDescription` is required.","name":"ValidatorError","path":"nameDescription","properties":{"message":"Path `nameDescription` is required.","path":"nameDescription","type":"required","value":""},"value":""},"items.1.productId":{"kind":"ObjectId","message":"Cast to ObjectId failed for value \"\" (type string) at path \"productId\" because of \"BSONError\"","name":"CastError","path":"productId","reason":{},"stringValue":"\"\"","value":"","valueType":"string"}},"level":"error","message":"Error saving bill: Billing validation failed: items.1.productId: Cast to ObjectId failed for value \"\" (type string) at path \"productId\" because of \"BSONError\", items.1.nameDescription: Path `nameDescription` is required.","stack":"ValidationError: Billing validation failed: items.1.productId: Cast to ObjectId failed for value \"\" (type string) at path \"productId\" because of \"BSONError\", items.1.nameDescription: Path `nameDescription` is required.\n    at Document.invalidate (C:\\Users\\vinay\\Documents\\ShankarAutomobile\\bike-scooter-app\\backend\\node_modules\\mongoose\\lib\\document.js:3351:32)\n    at Subdocument.invalidate (C:\\Users\\vinay\\Documents\\ShankarAutomobile\\bike-scooter-app\\backend\\node_modules\\mongoose\\lib\\types\\subdocument.js:229:12)\n    at EmbeddedDocument.$set (C:\\Users\\vinay\\Documents\\ShankarAutomobile\\bike-scooter-app\\backend\\node_modules\\mongoose\\lib\\document.js:1480:12)\n    at EmbeddedDocument.$set (C:\\Users\\vinay\\Documents\\ShankarAutomobile\\bike-scooter-app\\backend\\node_modules\\mongoose\\lib\\document.js:1132:16)\n    at EmbeddedDocument.Document (C:\\Users\\vinay\\Documents\\ShankarAutomobile\\bike-scooter-app\\backend\\node_modules\\mongoose\\lib\\document.js:178:12)\n    at EmbeddedDocument.Subdocument (C:\\Users\\vinay\\Documents\\ShankarAutomobile\\bike-scooter-app\\backend\\node_modules\\mongoose\\lib\\types\\subdocument.js:34:12)\n    at EmbeddedDocument.ArraySubdocument [as constructor] (C:\\Users\\vinay\\Documents\\ShankarAutomobile\\bike-scooter-app\\backend\\node_modules\\mongoose\\lib\\types\\arraySubdocument.js:44:15)\n    at new EmbeddedDocument (C:\\Users\\vinay\\Documents\\ShankarAutomobile\\bike-scooter-app\\backend\\node_modules\\mongoose\\lib\\schema\\documentArray.js:131:17)\n    at SchemaDocumentArray.cast (C:\\Users\\vinay\\Documents\\ShankarAutomobile\\bike-scooter-app\\backend\\node_modules\\mongoose\\lib\\schema\\documentArray.js:496:22)\n    at SchemaType.applySetters (C:\\Users\\vinay\\Documents\\ShankarAutomobile\\bike-scooter-app\\backend\\node_modules\\mongoose\\lib\\schemaType.js:1255:12)","timestamp":"2025-04-18 14:45:05"}
+{"level":"info","message":"Shutting down server...","timestamp":"2025-04-18 14:48:44"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 14:48:48"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:48:49"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:48:49"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:48:49"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:48:49"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:48:49"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:48:49"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:52:15"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:52:15"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:52:15"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 14:52:15"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 14:52:15"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 14:52:15"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 14:53:15"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 14:53:24"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 14:53:30"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 14:56:04"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 14:56:20"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 15:07:33"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:07:42"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:07:42"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:07:42"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:07:46"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:07:46"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:07:46"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:07:46"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:07:46"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:07:46"}
+{"level":"info","message":"Shutting down server...","timestamp":"2025-04-18 15:11:30"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 15:11:33"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:11:36"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:11:36"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:11:36"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:11:36"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:11:36"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:11:36"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:11:40"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:11:40"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:11:40"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:13:11"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:13:11"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:13:11"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:13:11"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:13:11"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:13:11"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:25:52"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:25:52"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:25:52"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:25:52"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:25:52"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:25:52"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:25:54"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:25:54"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:25:54"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:25:54"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:25:54"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:25:54"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:26:11"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:26:11"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:26:11"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:26:11"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:26:11"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:26:11"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:26:12"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:26:12"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:26:12"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:26:12"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:26:12"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:26:12"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:26:12"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:26:12"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:26:12"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:26:12"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:26:12"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:26:12"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:26:12"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:26:12"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:26:12"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:26:12"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:26:12"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:26:12"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:26:13"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:26:13"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:26:13"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:26:13"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:26:13"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:26:13"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:26:13"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:26:13"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:26:13"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:26:13"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:26:13"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:26:13"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:26:25"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:26:25"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:26:25"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:26:25"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:26:25"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:26:25"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 15:26:37"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 15:26:37"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 15:26:37"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 16:30:45"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 16:30:45"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 16:30:45"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 16:30:50"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 16:30:50"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 16:30:50"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-18 16:30:50"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-18 16:30:50"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-18 16:30:50"}
+{"level":"info","message":"Shutting down server...","timestamp":"2025-04-18 21:24:56"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-18 21:25:00"}
+{"level":"info","message":"Shutting down server...","timestamp":"2025-04-18 21:27:48"}
