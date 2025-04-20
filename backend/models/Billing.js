@@ -28,9 +28,8 @@ const billingSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    customerPhoneNumber: { // Added customer phone number field
+    customerPhoneNumber: { 
       type: String,
-      required: false, // Adjust to true if phone number is always required
     },
     billingDate: {
       type: Date,
@@ -40,6 +39,10 @@ const billingSchema = new mongoose.Schema(
     totalAmount: {
       type: Number,
       required: true,
+    },
+    isDraft: { 
+      type: Boolean,
+      default: true, // By default, create draft bills
     },
     createdAt: {
       type: Date,

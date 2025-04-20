@@ -2,11 +2,16 @@
     "name": "bike-scooter-app",
     "version": "1.0.0",
     "scripts": {
-      "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
-      "start:frontend": "cd frontend && npm run dev",
-      "start:backend": "cd backend && npm run dev"
+        "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
+        "start:frontend": "cd frontend && npm run dev",
+        "start:backend": "cd backend && npm run dev"
     },
+    "type": "module",
     "devDependencies": {
-      "concurrently": "^8.2.2"
+        "concurrently": "^8.2.2"
+    },
+    "dependencies": {
+        "jspdf": "^3.0.1",
+        "jspdf-autotable": "^5.0.2"
     }
-  }
+}

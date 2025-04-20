@@ -64,3 +64,14 @@ export const addBulkOrder = async (req, res) => {
     res.status(500).json({ message: 'Failed to add bulk order', error: error.message });
   }
 };
+
+// Controller to fetch all bulk orders
+export const getAllBulkOrders = async (req, res) => {
+  try {
+    const allBulkOrders = await BulkOrder.find({}).populate('items.product', 'name brand model partNo price quantity'); // Added 'quantity' here (this is the current stock quantity, not the ordered quantity)
+    res.status(200).json(allBulkOrders);
+  } catch (error) {
+    console.error('Error fetching all bulk orders:', error);
+    res.status(500).json({ message: 'Failed to fetch all bulk orders', error: error.message });
+  }
+};
