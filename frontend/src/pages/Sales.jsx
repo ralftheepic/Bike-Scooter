@@ -32,7 +32,7 @@ const Sales = () => {
       setLoadingIndividualBills(true);
       setErrorIndividualBills(null);
       try {
-        const response = await fetch('http://localhost:5000/api/bills');
+        const response = await fetch('http://localhost:5000/api/bills/finalized');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
         setIndividualBills(data);
@@ -129,12 +129,41 @@ const Sales = () => {
           {!loadingIndividualBills && !errorIndividualBills && individualBills.length > 0 ? (
             <ul className="space-y-4">
               {individualBills.map(bill => (
-                <li key={bill._id} className="border rounded-lg p-4 shadow bg-white">
-                  <p><strong>Bill ID:</strong> {bill._id}</p>
-                  <p><strong>Customer:</strong> {bill.customerName}</p>
-                  <p><strong>Total:</strong> ₹{bill.totalAmount?.toFixed(2)}</p>
-                </li>
-              ))}
+                  <li key={bill._id} className="border rounded-lg p-4 shadow bg-white space-y-2">
+                    <p><strong>Bill ID:</strong> {bill._id}</p>
+                    <p><strong>Customer:</strong> {bill.customerName}</p>
+                    <p><strong>Total:</strong> ₹{bill.totalAmount?.toFixed(2)}</p>
+
+                    {/* Render items */}
+                    <div className="overflow-x-auto mt-2">
+                      <table className="min-w-full table-auto border text-sm">
+                        <thead className="bg-gray-100">
+                          <tr>
+                            <th className="border px-3 py-1">Part No</th>
+                            <th className="border px-3 py-1">Name</th>
+                            <th className="border px-3 py-1">Brand</th>
+                            <th className="border px-3 py-1">Model</th>
+                            <th className="border px-3 py-1">Qty</th>
+                            <th className="border px-3 py-1">Price</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {bill.items.map((item, idx) => (
+                            <tr key={idx} className="hover:bg-gray-50">
+                              <td className="border px-3 py-1">{item.product?.partNo || 'N/A'}</td>
+                              <td className="border px-3 py-1">{item.product?.name || 'N/A'}</td>
+                              <td className="border px-3 py-1">{item.product?.brand || 'N/A'}</td>
+                              <td className="border px-3 py-1">{item.product?.model || 'N/A'}</td>
+                              <td className="border px-3 py-1 text-right">{item.quantity}</td>
+                              <td className="border px-3 py-1 text-right">₹{item.price?.toFixed(2)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </li>
+                ))}
+
             </ul>
           ) : (
             <p>No individual bills found.</p>

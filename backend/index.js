@@ -7,6 +7,8 @@ import productRoutes from './routes/productRoutes.js';
 import healthRoutes from './routes/health.js';
 import bulkOrderRoutes from './routes/bulkOrder.js';
 import billRoutes from './routes/bill.js';
+import { checkLowStock } from './utils/monitor.js'; 
+import scannerRoutes from './routes/scanner.js';// 🆕 Import the monitor
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -24,13 +26,20 @@ app.get('/', (req, res) => {
 });
 app.use('/health', healthRoutes);
 app.use('/api/products', productRoutes);
-app.use('/api/bulk-orders', bulkOrderRoutes); 
+app.use('/api/bulk-orders', bulkOrderRoutes);
 app.use('/api/bills', billRoutes);
+app.use('/api/products/barcode', scannerRoutes);
 
 // Start server
 const server = app.listen(port, () => {
   logger.info(`Server started on port ${port}`);
   console.log(`Server running on port ${port}`);
+
+  // 🆕 Run low-stock check once on startup
+  checkLowStock();
+
+  // 🆕 Check every 1 hour
+  setInterval(checkLowStock, 1000 * 60 * 60); // 1 hour interval
 });
 
 // Graceful shutdown

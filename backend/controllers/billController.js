@@ -1,32 +1,32 @@
-import Bill from '../models/Billing.js'; // Finalized Bills Model
-import DraftBill from '../models/DraftBills.js'; // Draft Bills Model
-import Product from '../models/Product.js'; // Product Model for stock updates
-import logger from '../utils/logger.js'; // Assuming you have a logger utility
+import Bill from '../models/Billing.js'; 
+import DraftBill from '../models/DraftBills.js'; 
+import Product from '../models/Product.js'; 
+import logger from '../utils/logger.js';
+import mongoose from 'mongoose'; //
 
-// Save a NEW bill (either as draft or directly finalized)
 const saveBill = async (req, res) => {
   const { customerName, customerPhoneNumber, billingDate, items, totalAmount, isDraft } = req.body;
 
   try {
-    // Basic validation
+    
     if (!customerName || !billingDate || !items || items.length === 0 || totalAmount === undefined) {
       logger.warn('Save Bill failed: Missing required fields or empty items.', { body: req.body });
       return res.status(400).json({ message: 'Missing required fields (Customer Name, Date, Items, Total Amount)' });
     }
 
-    // Server-side calculation/validation of total amount (optional but recommended)
+  
     const calculatedTotalAmount = items.reduce((acc, item) => {
         const price = Number(item.price) || 0;
         const quantity = Number(item.quantity) || 0;
         return acc + price * quantity;
     }, 0);
 
-    if (Math.abs(calculatedTotalAmount - totalAmount) > 0.01) { // Allow for small floating point differences
+    if (Math.abs(calculatedTotalAmount - totalAmount) > 0.01) { 
        logger.warn(`Save Bill failed: Total amount mismatch. Calculated: ${calculatedTotalAmount}, Provided: ${totalAmount}`, { body: req.body });
       return res.status(400).json({ message: `Total amount (${totalAmount.toFixed(2)}) does not match the sum of item prices (${calculatedTotalAmount.toFixed(2)})` });
     }
 
-    // Determine if saving as draft or final
+   
     const BillModel = isDraft ? DraftBill : Bill;
     const billStatus = isDraft ? 'draft' : 'finalized';
 
@@ -35,14 +35,14 @@ const saveBill = async (req, res) => {
       customerPhoneNumber,
       billingDate,
       items, // Assuming items structure matches schema (productId, nameDescription, price, quantity)
-      totalAmount: calculatedTotalAmount, // Use server-calculated total
-      isDraft: isDraft, // Explicitly set based on request
+      totalAmount: calculatedTotalAmount, 
+      isDraft: isDraft,
     });
 
     const savedBill = await newBill.save();
     logger.info(`Successfully saved ${billStatus} bill with ID: ${savedBill._id}`);
 
-    // --- If the bill is saved directly as FINALIZED, update the stock ---
+  
     if (!savedBill.isDraft) {
         logger.info(`Updating stock for directly finalized bill ID: ${savedBill._id}`);
         try {
@@ -278,10 +278,109 @@ const updateDraftBill = async (req, res) => {
   }
 };
 
+// Add this in billController.js
+const getFinalizedBills = async (req, res) => {
+  logger.info("get all finalized bill");
+  try {
+    const finalizedBills = await Bill.find({ isDraft: false })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: 'items.productId',
+        select: 'partNo name brand model fit', // Select the fields you need from the Product model
+      });
+
+    // Process the nameDescription if productId is not populated or doesn't have brand, model, fit
+    const billsWithExtractedDetails = finalizedBills.map(bill => ({
+      ...bill.toObject(),
+      items: bill.items.map(item => {
+        if (item.productId) {
+          return {
+            ...item.toObject(),
+            product: {
+              partNo: item.productId.partNo || 'N/A',
+              name: item.productId.name || 'N/A',
+              brand: item.productId.brand || 'N/A',
+              model: item.productId.model || 'N/A',
+              fit: item.productId.fit || 'N/A',
+            },
+          };
+        } else if (item.nameDescription) {
+          // Fallback to parsing nameDescription if productId is not populated
+          const parts = item.nameDescription.match(/^(.+?)\s+\((.+?)\)\s+\[(.*?)\]\s+-\s+(.*)$/);
+          const name = parts?.[1] || item.nameDescription || 'N/A';
+          const brand = parts?.[2] || 'N/A';
+          const model = parts?.[3] || 'N/A';
+          const fit = parts?.[4] || 'N/A';
+          return {
+            ...item.toObject(),
+            product: {
+              partNo: 'N/A', // Or try to extract if possible from nameDescription
+              name,
+              brand,
+              model,
+              fit,
+            },
+          };
+        } else {
+          return {
+            ...item.toObject(),
+            product: {
+              partNo: 'N/A',
+              name: 'N/A',
+              brand: 'N/A',
+              model: 'N/A',
+              fit: 'N/A',
+            },
+          };
+        }
+      }),
+    }));
+
+    res.status(200).json(billsWithExtractedDetails);
+  } catch (error) {
+    logger.error('Error fetching finalized bills:', error);
+    res.status(500).json({ message: 'Error fetching finalized bills', error: error.message });
+  }
+};
+
+const deleteBill = async (req, res) => {
+    try {
+      const billId = req.params.id;
+  
+      console.log(`Attempting to delete bill with ID: ${billId}`); // Log the received ID
+  
+      // Ensure the ID is treated as a Mongoose ObjectId
+      if (!mongoose.Types.ObjectId.isValid(billId)) { // This line requires 'mongoose' to be defined
+        console.log('Invalid Bill ID format');
+        return res.status(400).json({ message: 'Invalid Bill ID format' });
+      }
+  
+      // ... rest of the deleteBill function
+      const deletedBill = await DraftBill.findOneAndDelete({ _id: billId, isDraft: true });
+  
+      console.log('Result of findOneAndDelete:', deletedBill);
+  
+      if (!deletedBill) {
+        console.log(`Bill with ID ${billId} not found or is not a draft`);
+        return res.status(404).json({ message: 'Draft bill not found or is not a draft' });
+      }
+  
+      console.log(`Successfully deleted bill with ID: ${billId}`);
+      res.status(200).json({ message: 'Draft bill deleted successfully', bill: deletedBill });
+  
+    } catch (error) {
+      console.error('Error deleting bill:', error);
+      res.status(500).json({ message: 'Internal server error while deleting bill', error: error.message });
+    }
+  };
+
+
 export default {
   saveBill,       // POST /api/bills (Handles new drafts AND new finalized)
   getDraftBills,  // GET /api/bills (Should only return drafts)
   getDraftBill,   // GET /api/bills/:id (Gets a specific draft by ID)
   finalizeBill,   // PUT /api/bills/:id/finalize (Moves draft to final, deletes draft)
   updateDraftBill,// PUT /api/bills/:id (Updates an existing draft)
+  getFinalizedBills,
+  deleteBill,
 };

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ManualEntryForm from '../components/ManualEntryForm';
+import BarcodeScanner from '../components/BarcodeScanner';
+
 
 const Inventory = () => {
   const [showManualEntry, setShowManualEntry] = useState(false);
@@ -29,6 +31,29 @@ const Inventory = () => {
       setLoading(false);
     }
   };
+
+  const fetchProductByBarcode = async (barcode) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/products/barcode/${barcode}`);
+      if (!response.ok) {
+        throw new Error('Product not found.');
+      }
+      const product = await response.json();
+  
+      // Check if product already exists in state
+      const alreadyExists = inventory.some(item => item._id === product._id);
+      if (!alreadyExists) {
+        setInventory((prev) => [...prev, product]);
+      }
+  
+      alert(`Product added: ${product.name}`);
+      setShowInventoryList(true);
+    } catch (error) {
+      console.error(error);
+      alert('Failed to fetch product by barcode.');
+    }
+  };
+  
 
   useEffect(() => {
     if (showInventoryList) {
@@ -80,9 +105,9 @@ const Inventory = () => {
             setShowScannerEntry(false);
             setShowInventoryList(false);
           }}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex-grow"
         >
-          Manual Entry
+          Add New Product Manually
         </button>
         <button
           onClick={() => {
@@ -90,9 +115,9 @@ const Inventory = () => {
             setShowManualEntry(false);
             setShowInventoryList(false);
           }}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex-grow"
         >
-          Scanner Entry
+          Scan Product Barcode
         </button>
         <button
           onClick={() => {
@@ -100,20 +125,27 @@ const Inventory = () => {
             setShowManualEntry(false);
             setShowScannerEntry(false);
           }}
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex-grow"
         >
-          List All Products
+          View Inventory List
         </button>
-        <button
+        {/* Hide the Delete All Products button */}
+        {/* <button
           onClick={handleDeleteAllProducts}
           className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
         >
           Delete All Products
-        </button>
+        </button> */}
       </div>
 
       {showManualEntry && <ManualEntryForm onAddItem={handleAddItem} />}
-      {showScannerEntry && <div className="bg-white p-4 rounded shadow">Scanner functionality coming soon.</div>}
+      {showScannerEntry && (
+      <div className="bg-white p-4 rounded shadow">
+       <h3 className="text-lg font-semibold mb-2">Scan a Product</h3>
+        <BarcodeScanner onScanSuccess={fetchProductByBarcode} />
+      </div>
+      )}
+
 
       <div className="mt-8">
         {showInventoryList && ( // Conditionally render the Inventory List heading and table
