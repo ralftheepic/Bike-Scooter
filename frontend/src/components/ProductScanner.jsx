@@ -1,4 +1,3 @@
-// frontend/src/components/ProductScanner.jsx
 import React, { useState } from 'react';
 
 const ProductScanner = () => {
@@ -49,7 +48,6 @@ const ProductScanner = () => {
           <p>Brand: {productDetails.brand}</p>
           <p>Model: {productDetails.model}</p>
           <p>Price: ${productDetails.price}</p>
-          {/* Display other details */}
         </div>
       )}
     </div>

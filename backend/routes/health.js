@@ -37,6 +37,3 @@ router.get('/', async (req, res) => {
 });
 
 export default router;
-
-// In your main app (e.g., server.js):
-// app.use('/health', require('./routes/health'));

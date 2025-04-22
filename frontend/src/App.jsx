@@ -25,7 +25,7 @@ const App = () => {
         {/* Header */}
         <header className={`py-4 shadow-md ${gsCaltexColors.blue} text-white`}>
           <div className="container mx-auto px-6 flex justify-between items-center">
-            <h1 className="text-2xl font-bold">Bike and Scooter Shop</h1>
+            <h1 className="text-2xl font-bold">Shankar Automobiles & Shankar Bike Garage</h1>
             {/* You could add a logo here */}
           </div>
         </header>
@@ -104,7 +104,7 @@ const App = () => {
         {/* Footer */}
         <footer className={`py-4 mt-8 shadow-inner ${gsCaltexColors.blue} text-white ${gsCaltexColors.textSecondary}`}>
           <div className="container mx-auto px-6 text-center text-sm">
-            <p>&copy; 2025 Bike and Scooter Shop. All rights reserved.</p>
+            <p>&copy; 2025 Shankar Automobiles & Shankar Bike Garage. All rights reserved.</p>
           </div>
         </footer>
       </div>
