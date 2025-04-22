@@ -5,9 +5,9 @@ const router = express.Router();
 
 // Route to save a new bill (draft or finalized)
 router.post('/', billController.saveBill);
+
 router.get('/finalized', billController.getFinalizedBills);
 router.get('/drafts', billController.getDraftBills);
-
 router.get('/:id', billController.getDraftBill);
 
 router.put('/:id', billController.updateDraftBill);

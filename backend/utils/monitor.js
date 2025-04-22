@@ -1,4 +1,3 @@
-// utils/monitor.js
 import Product from '../models/Product.js';
 import { sendBulkLowStockAlert  } from './notifier.js';
 
