@@ -1958,3 +1958,73 @@
 {"level":"info","message":"Fetching all payment records","timestamp":"2025-04-22 16:14:11"}
 {"level":"info","message":"Server started on port 5000","timestamp":"2025-04-22 16:16:38"}
 {"level":"info","message":"Server started on port 5000","timestamp":"2025-04-22 16:16:53"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-22 22:23:18"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-22 22:23:30"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-22 22:23:30"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-22 22:23:30"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-22 22:23:33"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-22 22:23:33"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-22 22:23:33"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-22 22:23:33"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-22 22:23:33"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-22 22:23:33"}
+{"level":"info","message":"get all finalized bill","timestamp":"2025-04-22 22:23:41"}
+{"level":"info","message":"get all finalized bill","timestamp":"2025-04-22 22:23:41"}
+{"level":"info","message":"Workspaceing weekly sales report for dashboard from 2025-02-15T18:30:00.000Z to now","timestamp":"2025-04-22 22:23:44"}
+{"level":"info","message":"Workspaceing monthly purchases report for dashboard from 2024-04-30T18:30:00.000Z to now","timestamp":"2025-04-22 22:23:44"}
+{"level":"info","message":"Workspaceing monthly sales report for dashboard from 2024-04-30T18:30:00.000Z to now","timestamp":"2025-04-22 22:23:44"}
+{"level":"info","message":"Workspaceing weekly sales report for dashboard from 2025-02-15T18:30:00.000Z to now","timestamp":"2025-04-22 22:23:44"}
+{"level":"info","message":"Workspaceing monthly sales report for dashboard from 2024-04-30T18:30:00.000Z to now","timestamp":"2025-04-22 22:23:44"}
+{"level":"info","message":"Workspaceing monthly purchases report for dashboard from 2024-04-30T18:30:00.000Z to now","timestamp":"2025-04-22 22:23:44"}
+{"level":"info","message":"Fetching all payment records","timestamp":"2025-04-22 22:23:46"}
+{"level":"info","message":"Fetching all payment records","timestamp":"2025-04-22 22:23:46"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-22 22:27:15"}
+{"level":"info","message":"Server started on port 5000","timestamp":"2025-04-22 22:27:40"}
+{"level":"info","message":"get all finalized bill","timestamp":"2025-04-22 22:29:22"}
+{"level":"info","message":"get all finalized bill","timestamp":"2025-04-22 22:29:22"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-22 22:29:32"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-22 22:29:32"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-22 22:29:32"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-22 22:29:32"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-22 22:29:32"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-22 22:29:32"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-22 22:29:42"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-22 22:29:42"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-22 22:29:42"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-22 22:33:29"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-22 22:33:29"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-22 22:33:29"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-22 22:33:37"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-22 22:33:37"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-22 22:33:37"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-22 22:33:37"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-22 22:33:37"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-22 22:33:37"}
+{"level":"info","message":"get all finalized bill","timestamp":"2025-04-22 22:33:39"}
+{"level":"info","message":"get all finalized bill","timestamp":"2025-04-22 22:33:39"}
+{"level":"info","message":"get all finalized bill","timestamp":"2025-04-22 22:43:51"}
+{"level":"info","message":"get all finalized bill","timestamp":"2025-04-22 22:43:51"}
+{"level":"warn","message":"Product not found for ID: 13219659","productId":"13219659","timestamp":"2025-04-22 22:51:02"}
+{"level":"warn","message":"Product not found for ID: 8904117401212","productId":"8904117401212","timestamp":"2025-04-22 22:58:27"}
+{"level":"warn","message":"Product not found for ID: 36PD0050KIT MASTER CYL MAJORQTY-01 NOS","productId":"36PD0050KIT MASTER CYL MAJORQTY-01 NOS","timestamp":"2025-04-22 23:00:13"}
+{"level":"warn","message":"Product not found for ID: DK121009-1_98","productId":"DK121009-1_98","timestamp":"2025-04-22 23:03:20"}
+{"level":"warn","message":"Product not found for ID: 36PD0050-1_223","productId":"36PD0050-1_223","timestamp":"2025-04-22 23:08:08"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-22 23:11:57"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-22 23:11:57"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-22 23:11:57"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-22 23:11:57"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-22 23:11:57"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-22 23:11:57"}
+{"level":"info","message":"get all finalized bill","timestamp":"2025-04-22 23:12:07"}
+{"level":"info","message":"get all finalized bill","timestamp":"2025-04-22 23:12:07"}
+{"level":"info","message":"Workspaceing monthly sales report for dashboard from 2024-04-30T18:30:00.000Z to now","timestamp":"2025-04-22 23:12:36"}
+{"level":"info","message":"Workspaceing weekly sales report for dashboard from 2025-02-15T18:30:00.000Z to now","timestamp":"2025-04-22 23:12:36"}
+{"level":"info","message":"Workspaceing monthly purchases report for dashboard from 2024-04-30T18:30:00.000Z to now","timestamp":"2025-04-22 23:12:36"}
+{"level":"info","message":"Workspaceing monthly sales report for dashboard from 2024-04-30T18:30:00.000Z to now","timestamp":"2025-04-22 23:12:36"}
+{"level":"info","message":"Workspaceing weekly sales report for dashboard from 2025-02-15T18:30:00.000Z to now","timestamp":"2025-04-22 23:12:36"}
+{"level":"info","message":"Workspaceing monthly purchases report for dashboard from 2024-04-30T18:30:00.000Z to now","timestamp":"2025-04-22 23:12:36"}
+{"level":"info","message":"Fetching all payment records","timestamp":"2025-04-22 23:12:47"}
+{"level":"info","message":"Fetching all payment records","timestamp":"2025-04-22 23:12:47"}
+{"level":"info","message":"Received GET request at /api/products","timestamp":"2025-04-23 20:00:28"}
+{"level":"info","message":"Received request to get all products","timestamp":"2025-04-23 20:00:28"}
+{"level":"info","message":"Retrieved all products:","timestamp":"2025-04-23 20:00:28"}

@@ -13,7 +13,7 @@ import frontendLogRoutes from './routes/frontendLog.js';
 import paymentRoutes from './routes/payment.js';
 import reportsRoutes from './routes/reports.js';
 import cron from 'node-cron';
-
+import dotenv from 'dotenv'
 
 dotenv.config();
 
