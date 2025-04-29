@@ -82,16 +82,9 @@ const Sales = () => {
         setLoadingIndividualBills(false);
       }
     };
-    // === Reverted dependency array back to empty [] ===
      fetchIndividualBills();
-  }, []); // Empty dependency array runs once on mount
+  }, []); 
 
-    // Removed the useEffect for fetching dashboard data - Dashboard component handles this
-
-
-  // --- Filtering Logic (Existing) ---
-
-  // Filter Bulk Orders based on filter state
   const filteredBulkOrders = bulkOrders.filter(order => {
       const matchesDistributor = order.distributorSource
         ? order.distributorSource.toLowerCase().includes(filterBuyDistributor.toLowerCase())
@@ -142,12 +135,6 @@ const Sales = () => {
         setFilterSellPriceGreaterThan('');
         setFilterSellPriceLessThan('');
     };
-
-
-  // --- Removed Data Preparation for Charts ===
-
-
-  // --- Render ---
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
@@ -408,10 +395,7 @@ const Sales = () => {
           )}
         </div>
       )}
-
-        {/* === Dashboard Section (Renders the Dashboard Component) === */}
         {activeSalesSection === 'dashboard' && (
-            // === Render the imported Dashboard component here ===
             <Dashboard />
         )}
 

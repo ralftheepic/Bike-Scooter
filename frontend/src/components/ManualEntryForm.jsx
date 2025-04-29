@@ -1,26 +1,143 @@
 import React, { useState } from 'react';
 
-const brandOptions = ['Honda', 'Yamaha', 'TVS', 'Hero', 'Bajaj', 'Suzuki', 'RoyalEnfield'];
+const brandOptions = [
+  'Amaron',
+  'Bajaj',
+  'Hero',
+  'Honda',
+  'Rolon',
+  'RoyalEnfield',
+  'Suzuki',
+  'TVS',
+  'Yamaha'
+];
 
 const modelOptions = {
-  Honda: ['Activa', 'Dio', 'Shine', 'Universal'],
-  Yamaha: ['FZ', 'R15', 'RayZR', 'Universal'],
-  TVS: ['Apache', 'Jupiter', 'Ntorq', 'Universal'],
-  Hero: ['Splendor', 'HF Deluxe', 'Pleasure', 'Universal'],
-  Bajaj: ['Pulsar', 'Avenger', 'CT100', 'Universal'],
-  Suzuki: ['Access', 'Burgman', 'Gixer', 'Avenis', 'Universal'],
-  RoyalEnfield: ['classic', 'Electra', 'Reborn', 'ThunderBird', 'Hunter', 'Universal'],
+  Amaron: [
+    'AP-ATZ6L',
+    'AP-BTX5L',
+    'AP-BTX7R',
+    'AP-BTX9',
+    'AP-BTZ4L',
+    'AP-BTZ5L',
+    'AP-BTZ7L',
+    'AP-BTZ9R'
+  ],
+  Bajaj: [
+    'Avenger 150',
+    'Avenger 220',
+    'Avenger Cruise',
+    'CT100',
+    'Discover 100',
+    'Pulsar',
+    'Pulsar 200',
+    'Universal'
+  ],
+  Hero: [
+    'Activa',
+    'Duet',
+    'Destiny',
+    'Destiny bs6',
+    'HF Deluxe',
+    'Masetro Edge',
+    'Passion 2020',
+    'Passion Plus',
+    'Passion Pro',
+    'Pleasure',
+    'Pleasure BS6',
+    'Shine',
+    'Shine BS6',
+    'Super Splendour',
+    'Splendour plus',
+    'Splendor',
+    'Splendor bs6',
+    'Splendour Old',
+    'Unicorn',
+    'Universal',
+    'XPro',
+    'Xpulse',
+    'Xpulse 4 valv',
+    'Zoom'
+  ],
+  Honda: [
+    'Activa',
+    'Activa 3g/4g',
+    'Activa 6g',
+    'Activa 6g B',
+    'Activa 6g 2020 A',
+    'Activa 6g 2020 B',
+    'Activa 6g 2021',
+    'Activa 6g 2021 A',
+    'Activa 6g 2021 B',
+    'Activa 6g 2022 A',
+    'Activa 6g 2022 B',
+    'Activa 6g Lock',
+    'Activa 6g Nut',
+    'Dio',
+    'Dream Yoga',
+    'Hornet',
+    'Shine',
+    'Shine BS4',
+    'Shine BS6',
+    'Unicorn',
+    'Unicorn BS6',
+    'Universal'
+  ],
+  Rolon: [
+    'FZ16/FZS/FAZER',
+    'Hiness 350',
+    'Raider 125',
+    'Unicorn'
+  ],
+  RoyalEnfield: [
+    'Electra',
+    'Hunter',
+    'Reborn',
+    'ThunderBird',
+    'classic',
+    'Universal'
+  ],
+  Suzuki: [
+    'Access',
+    'Avenis',
+    'Burgman',
+    'Gixer',
+    'Universal'
+  ],
+  TVS: [
+    'Apache',
+    'Apache 160',
+    'Apache 200',
+    'Jupiter',
+    'Ntorq',
+    'Universal'
+  ],
+  Yamaha: [
+    'FZ',
+    'FZ V2',
+    'FZ v1 v2',
+    'FZ v3',
+    'MT 15',
+    'R15',
+    'R15 v3',
+    'RayZR',
+    'Universal'
+  ]
 };
 
 const distributorOptions = [
-  'MehtaAutomobile',
-  'TVS SaiBaba',
-  'RoyalEnfield Rajkamal',
+  'Amaron Battery',
   'Bajaj sai services',
   'Hero kiran',
   'Honda Shanti',
-  'Yahama SaiBaba',
+  'MehtaAutomobile',
+  'Rolon',
+  'RoyalEnfield Rajkamal',
+  'Suzuki',
+  'TVS SaiBaba',
+  'Yahama SaiBaba'
 ];
+
 
 const ManualEntryForm = ({ onBulkOrderAdded }) => {
   const [distributorSource, setDistributorSource] = useState('');
@@ -159,6 +276,7 @@ const ManualEntryForm = ({ onBulkOrderAdded }) => {
 
       if (response.ok) {
         const addedOrder = await response.json();
+        console.log(response.json())
         setSuccessMessage('Bulk order added successfully!');
         setErrorMessage('');
         if (onBulkOrderAdded) onBulkOrderAdded(addedOrder);
