@@ -1,12 +1,11 @@
 import Bill from '../models/Billing.js';
 import DraftBill from '../models/DraftBills.js';
 import Product from '../models/Product.js';
-import Customer from '../models/Customers.js'; // Import Customer model
-import Payment from '../models/Payment.js'; // Import Payment model
+import Customer from '../models/Customers.js'; 
+import Payment from '../models/Payment.js';
 import logger from '../utils/logger.js';
 import mongoose from 'mongoose';
 
-// Helper function to handle Customer lookup/creation and latest billing date update
 const handleCustomerAndPaymentLinking = async (billData, savedBillId, session) => {
      logger.info(`Starting customer and payment linking for bill ID: ${savedBillId}`);
      const { customerName, customerPhoneNumber, billingDate, totalAmount, paymentMethod } = billData;
@@ -30,7 +29,6 @@ const handleCustomerAndPaymentLinking = async (billData, savedBillId, session) =
              logger.info(`New customer created with ID: ${customer._id}`);
          } else {
              logger.info(`Existing customer found with ID: ${customer._id} for phone number ${customerPhoneNumber}.`);
-             // Update latest billing date only if the current bill's date is later
              if (!customer.latestBillingDate || new Date(billingDate) > new Date(customer.latestBillingDate)) {
                  customer.latestBillingDate = billingDate;
                  await customer.save({ session });
@@ -41,16 +39,16 @@ const handleCustomerAndPaymentLinking = async (billData, savedBillId, session) =
          }
          customerId = customer._id;
          logger.info(`Customer handled. Customer ID: ${customerId}`);
-
+         logger.info('Value of paymentMethod before creating Payment document:', paymentMethod);
          const payment = new Payment({
              billingId: savedBillId,
              customerId: customerId,
-             customerName: customer.name, // Use name from the saved customer document
-             customerPhoneNumber: customer.phoneNumber, // Use phone from the saved customer document
+             customerName: customer.name, 
+             customerPhoneNumber: customer.phoneNumber,
              billingDate: billingDate,
              totalAmount: totalAmount,
              paymentMethod: paymentMethod,
-             paymentDate: new Date(), // Payment date is when the record is created (finalized)
+             paymentDate: new Date(), 
          });
          await payment.save({ session });
          paymentId = payment._id;
@@ -65,11 +63,11 @@ const handleCustomerAndPaymentLinking = async (billData, savedBillId, session) =
 
          logger.info(`Bill ID ${savedBillId} updated with customerRef ${customerId} and paymentRef ${paymentId}`);
 
-         return { customerRef: customerId, paymentRef: paymentId }; // Return the IDs
+         return { customerRef: customerId, paymentRef: paymentId }; 
 
      } catch (error) {
          logger.error(`Error during customer/payment linking for bill ID ${savedBillId}:`, error);
-         throw error; // Re-throw the error to be caught by the main try-catch block
+         throw error; 
      }
 };
 
@@ -117,7 +115,6 @@ const saveBill = async (req, res) => {
       items,
       totalAmount: calculatedTotalAmount,
       isDraft: isDraft,
-      // customerRef, paymentRef, finalizedAt will be set if not draft
     });
 
     const savedBill = await newBill.save({ session });
@@ -236,9 +233,6 @@ const getDraftBill = async (req, res) => {
       logger.warn(`Get Draft Bill: Draft bill not found with ID: ${req.params.id}`);
       return res.status(404).json({ message: 'Draft bill not found' });
     }
-
-    // Although fetching from DraftBill, we can double check isDraft if needed
-    // if (!draftBill.isDraft) { /* handle if necessary */ }
 
     res.status(200).json(draftBill); // Return the draft bill
   } catch (error) {
@@ -509,7 +503,8 @@ const getFinalizedBills = async (req, res) => {
       .populate({
         path: 'items.productId',
         select: 'partNo name brand model fit', // Select the fields you need from the Product model
-      });
+      }).populate('customerRef')
+        .populate('paymentRef');
 
     // Process the nameDescription if productId is not populated or doesn't have brand, model, fit
     const billsWithExtractedDetails = finalizedBills.map(bill => ({

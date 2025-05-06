@@ -27,23 +27,15 @@ const sendMessage = async (phoneNumber, customer) => {
   console.log('-------------------------------------------------------');
 };
 
-
-/**
- * Finds customers whose last billing date was approximately REMINDER_INTERVAL_MONTHS ago
- * and triggers sending them a service reminder message.
- */
 export const sendServiceReminders = async () => {
   try {
     console.log('Running scheduled service reminder check...');
 
-    // Calculate the date REMINDER_INTERVAL_MONTHS months ago
     const today = new Date();
     const targetDateStart = new Date(today);
     targetDateStart.setMonth(today.getMonth() - REMINDER_INTERVAL_MONTHS);
-    // Set to the beginning of the target day for the start of the window
     targetDateStart.setHours(0, 0, 0, 0);
 
-    // Calculate the end of the check window (e.g., targetDateStart + CHECK_WINDOW_DAYS)
     const targetDateEnd = new Date(targetDateStart);
     targetDateEnd.setDate(targetDateStart.getDate() + CHECK_WINDOW_DAYS); // Check up to the end of the next day
 

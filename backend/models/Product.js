@@ -7,7 +7,7 @@ const productSchema = mongoose.Schema({
   name: { type: String, required: true },
   brand: String,
   model: String,
-  partNo: { type: Number, required: false },
+  partNo: { type: String, required: false },
   category: { type: String, enum: ['bike', 'scooter','ALL'], required: true },
   price: { type: Number, required: true },  // Required
   quantity: { type: Number, required: true },
