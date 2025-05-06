@@ -117,8 +117,6 @@ const Billing = () => {
       })),
       totalAmount: parseFloat(totalAmount.toFixed(2)), // Ensure totalAmount is a number
       isDraft: true, // Always true when saving a draft
-      // customerRef and paymentRef are managed by the backend on finalization
-      // Do NOT send customerRef or paymentRef here for a draft unless you are pre-linking it
     };
 
     let apiUrl;
@@ -276,10 +274,6 @@ const Billing = () => {
     }
   };
 
-
-  // --- Billing Item Management ---
-
-  // Add a new empty row for a billing item
   const addItem = () => {
     // Only add if the current bill is not finalized
     if (isBillFinalized) return;
@@ -296,31 +290,35 @@ const Billing = () => {
     setNextItemNo(nextItemNo + 1);
   };
 
-    // Handle input change in the description field (for search/suggestions)
-  const handleInputChange = (index, value) => {
-    if (isBillFinalized) return; // Prevent changes if finalized
+    const handleInputChange = (index, value) => {
+    // Prevent changes if bill is finalized
+    if (isBillFinalized) return;
 
+    // Create a copy of the billing items state
     const updatedItems = [...billingItems];
     updatedItems[index].nameDescription = value;
-    // Clear productId and partNumber if the user is typing freely
     updatedItems[index].productId = '';
-    updatedItems[index].partNumber = '';
-
     setBillingItems(updatedItems);
-    setSearchTerm(value); // Keep searchTerm updated with the current input value
-    setSelectedProductIndex(index); // Indicate which row's input is active for suggestions
+    setSearchTerm(value);
+    setSelectedProductIndex(index);
+    console.log("Inventory (for debugging):", inventory);
+    if (value.length > 1) {
+      const filteredSuggestions = inventory.filter((product) => {
+          // Combine relevant product fields for searching
+          const searchString = `${product.name || ''} ${product.brand || ''} ${product.model || ''} ${product.partNo || ''} ${product.productId || ''} ${product.description || ''}`; // Include productId and partNo in search string
 
-    if (value.length > 1) { // Trigger search after 2+ characters
-      const filteredSuggestions = inventory.filter((product) =>
-        `${product.name || ''} ${product.brand || ''} ${product.model || ''} ${product.partNumber || ''} ${product.description || ''}`
-          .toLowerCase()
-          .includes(value.toLowerCase())
-      );
-      setSuggestions(filteredSuggestions.slice(0, 10)); // Show top 10 suggestions
+           return searchString.toLowerCase().includes(value.toLowerCase());
+      });
+      console.log("Filtered Suggestions (for debugging):", filteredSuggestions);
+      setSuggestions(filteredSuggestions.slice(0, 10));
     } else {
-      setSuggestions([]); // Clear suggestions if search term is too short
+      // Clear suggestions if the input is too short
+      setSuggestions([]);
     }
   };
+
+    
+
 
     // Handle selection of a product from the suggestions list
   const handleSuggestionClick = (index, product) => {
@@ -333,22 +331,19 @@ const Billing = () => {
       i === index
         ? {
             ...item,
-            productId: product._id, // Store the product ID from inventory
-            nameDescription: nameDescription, // Use the generated description
-            price: parseFloat(product.price || 0), // Use the price from inventory
-            partNumber: product.partNumber || '', // Store part number from inventory
-            // Optionally reset quantity to 1 if selecting a new product
-            // quantity: 1,
+            productId: product._id, 
+            nameDescription: nameDescription,
+            price: parseFloat(product.price || 0), 
+            partNumber: product.partNumber || product.productId,
           }
         : item
     );
     setBillingItems(updatedItems);
-    setSuggestions([]); // Clear suggestions after selection
-    setSearchTerm(''); // Clear global search term (optional, depends on UI flow)
-    setSelectedProductIndex(-1); // Hide suggestion list
+    setSuggestions([]); 
+    setSearchTerm(''); 
+    setSelectedProductIndex(-1); 
   };
 
-    // Handle quantity changes for a billing item
   const handleQuantityChange = (index, quantity) => {
     if (isBillFinalized) return;
 
@@ -528,99 +523,89 @@ const Billing = () => {
           alert("Cannot print an empty bill.");
           return;
       }
-      // Add print-specific CSS classes or styles if needed before printing
-      // e.g., document.body.classList.add('print-mode');
-      window.print();
-      // Remove print-specific classes after printing
-      // e.g., document.body.classList.remove('print-mode');
+      window.print(); 
   };
 
-  // Handle saving the bill as a PDF (client-side generation)
   const handleSaveAsPDF = () => {
-     if (billingItems.length === 0) {
-          alert("Cannot save an empty bill as PDF.");
-          return;
-      }
-
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
     const margin = 10;
     let y = margin;
-
-    // Header
+  
+    // Title
     doc.setFontSize(20);
-    doc.text('Bill', margin, y);
+    doc.text('Shankar Automobile & Shankar Bike Garage', margin, y);
     y += 10;
-
-    // Customer and Date
+  
+    // Customer and Date Info
     doc.setFontSize(12);
-    doc.text(`Customer Name: ${customerName || 'N/A'}`, margin, y);
+    doc.text(`Customer Name: ${customerName}`, margin, y);
     y += 5;
-     doc.text(`Customer Phone: ${customerPhoneNumber || 'N/A'}`, margin, y);
-     y += 5;
-    doc.text(`Billing Date: ${billingDate ? new Date(billingDate).toLocaleDateString() : 'N/A'}`, margin, y);
+    doc.text(`Billing Date: ${billingDate}`, margin, y);
     y += 10;
-
-    // Include CustomerRef and PaymentRef in PDF if available and finalized
-    if (isBillFinalized) {
-        if (customerRefId) {
-            doc.text(`Customer ID: ${customerRefId}`, margin, y);
-            y += 5;
-        }
-         if (finalizedBillId) { // Use finalizedBillId which is the Bill's _id
-             doc.text(`Bill ID: ${finalizedBillId}`, margin, y);
-             y += 5;
-         }
-        if (paymentRefId) {
-            doc.text(`Payment ID: ${paymentRefId}`, margin, y);
-            y += 5;
-        }
-         y += 5; // Add a little space after the IDs if they were printed
-    }
-
-
-    // Items Table using jspdf-autotable
-    const tableColumn = ['No.', 'Product Description', 'Part No.', 'Price (₹)', 'Quantity', 'Total (₹)'];
-    const tableRows = [];
-
-    billingItems.forEach(item => {
-        const itemData = [
-            item.itemNo,
-            item.nameDescription,
-            item.partNumber || '-', // Display '-' if no part number
-            item.price.toFixed(2),
-            item.quantity,
-            (item.price * item.quantity).toFixed(2)
-        ];
-        tableRows.push(itemData);
-    });
-
-    doc.autoTable({
-        head: [tableColumn],
-        body: tableRows,
-        startY: y, // Start the table after the customer/ID info
-        theme: 'striped', // 'striped', 'grid', 'plain'
-        headStyles: { fillColor: [200, 200, 200], textColor: [0, 0, 0] }, // Light gray header
-        margin: { top: y, left: margin, right: margin },
-        didDrawPage: function (data) {
-            // Footer
-            doc.setFontSize(10);
-            const pageNumber = doc.internal.getNumberOfPages();
-            doc.text(`Page ${pageNumber}`, pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
-        }
-    });
-
-    // Get the final Y position after the table
-    const finalY = doc.autoTable.previous.finalY;
-
-    // Total Amount
-    doc.setFontSize(14);
+  
+    // Header setup
+    const headers = ['Item No.', 'Name & Description', 'Part No & Product ID', 'Price', 'Quantity', 'Total'];
+    const colWidths = [15, 60, 50, 20, 20, 25];
+    let x = margin;
+  
+    // Table headers
+    doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
-    doc.text(`Total Amount: ₹${totalAmount.toFixed(2)}`, pageWidth - margin, finalY + 10, { align: 'right' });
-
-    // Save the PDF
-    doc.save(`bill_${billingDate}_${customerName.replace(/\s+/g, '_') || 'customer'}${finalizedBillId ? '_ID_' + finalizedBillId.substring(0, 6) : ''}.pdf`);
-  }; // End of handleSaveAsPDF
+    headers.forEach((header, i) => {
+      doc.text(header, x, y);
+      x += colWidths[i];
+    });
+    y += 5;
+    doc.line(margin, y, pageWidth - margin, y);
+    y += 3;
+  
+    // Table body
+    doc.setFont('helvetica', 'normal');
+    billingItems.forEach((item) => {
+      console.log(item );
+      x = margin;
+      doc.text(String(item.itemNo), x, y);
+      x += colWidths[0];
+  
+      // Name & Description
+      doc.text(item.nameDescription, x, y);
+      x += colWidths[1];
+  
+      // Part No & Product ID
+      const partNoAndId = item.partNumber
+      ? item.partNumber
+      : (item.productId || '');
+      doc.text(partNoAndId, x, y);
+      x += colWidths[2];
+  
+      // Price
+      doc.text(item.price.toFixed(2), x, y);
+      x += colWidths[3];
+  
+      // Quantity
+      doc.text(String(item.quantity), x, y);
+      x += colWidths[4];
+  
+      // Total
+      doc.text((item.price * item.quantity).toFixed(2), x, y);
+      y += 5;
+    });
+  
+    // Bottom line
+    doc.line(margin, y, pageWidth - margin, y);
+    y += 5;
+  
+    // Total Amount
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Total Amount: ${totalAmount.toFixed(2)}`, margin, y);
+  
+    // Save PDF
+    const fileName = `bill_${billingDate}_${customerName.replace(/\s+/g, '_')}.pdf`;
+    doc.save(fileName);
+  };
+  
 
   // --- New Bill / Reset ---
 
