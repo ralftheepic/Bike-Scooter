@@ -185,8 +185,7 @@ const Billing = () => {
 
       if (response.ok) {
         const data = await response.json();
-
-        // Ensure the loaded data is valid and populate state
+        console.log('Draft bill loaded:', data);
         if (!data || !data.items || data.customerName === undefined) {
              alert('Invalid data received: Bill data incomplete.');
              // Decide if you clear the form or leave partial data
@@ -275,26 +274,23 @@ const Billing = () => {
   };
 
   const addItem = () => {
-    // Only add if the current bill is not finalized
     if (isBillFinalized) return;
 
     const newItem = {
       itemNo: nextItemNo,
-      productId: '', // Will be populated from inventory selection
+      productId: '',
       nameDescription: '',
       price: 0,
       quantity: 1,
-      partNumber: '', // Will be populated from inventory selection
+      partNumber: '',
     };
     setBillingItems([...billingItems, newItem]);
     setNextItemNo(nextItemNo + 1);
   };
 
     const handleInputChange = (index, value) => {
-    // Prevent changes if bill is finalized
     if (isBillFinalized) return;
 
-    // Create a copy of the billing items state
     const updatedItems = [...billingItems];
     updatedItems[index].nameDescription = value;
     updatedItems[index].productId = '';
@@ -304,23 +300,16 @@ const Billing = () => {
     console.log("Inventory (for debugging):", inventory);
     if (value.length > 1) {
       const filteredSuggestions = inventory.filter((product) => {
-          // Combine relevant product fields for searching
-          const searchString = `${product.name || ''} ${product.brand || ''} ${product.model || ''} ${product.partNo || ''} ${product.productId || ''} ${product.description || ''}`; // Include productId and partNo in search string
-
+          const searchString = `${product.name || ''} ${product.brand || ''} ${product.model || ''} ${product.partNo || ''} ${product.productId || ''} ${product.description || ''}`; 
            return searchString.toLowerCase().includes(value.toLowerCase());
       });
       console.log("Filtered Suggestions (for debugging):", filteredSuggestions);
       setSuggestions(filteredSuggestions.slice(0, 10));
     } else {
-      // Clear suggestions if the input is too short
       setSuggestions([]);
     }
   };
 
-    
-
-
-    // Handle selection of a product from the suggestions list
   const handleSuggestionClick = (index, product) => {
     if (isBillFinalized) return;
 
@@ -369,9 +358,6 @@ const Billing = () => {
     setNextItemNo(newItems.length + 1); // Update next item number
   };
 
-  // --- Total Calculation Effect ---
-
-  // Recalculate total amount whenever billingItems change
   useEffect(() => {
     const newTotal = billingItems.reduce((sum, item) => {
         const price = parseFloat(item.price) || 0;
@@ -399,24 +385,17 @@ const Billing = () => {
         setFinalizedBillId(null); // Clear any previous finalized ID before attempting
          setCustomerRefId(null); // Clear refs before attempting to finalize
          setPaymentRefId(null);
-    
-        // NOTE: You will need to add a way to select and send paymentMethod from the UI
-        // For now, using a placeholder.
-        const paymentMethod = 'Cash'; // Placeholder - Replace with actual selection
-    
+
     
         const billData = {
           customerName,
           customerPhoneNumber,
           billingDate, // Send billing date
           items: billingItems.map(item => ({
-            // Ensure these match billingItemSchema
-            productId: item.productId, // Must have product ID if selected from inventory
-            nameDescription: item.nameDescription,
-            price: parseFloat(item.price),
-            quantity: parseInt(item.quantity, 10),
-            partNumber: item.partNumber || '',
-          })),
+          product: item.productId, // Map productId to product field
+          quantity: parseInt(item.quantity, 10),
+          price: parseFloat(item.price),
+          })),
           totalAmount: parseFloat(totalAmount.toFixed(2)), // Send calculated total
           isDraft: false, // Explicitly mark as not a draft
           paymentMethod: paymentMethod, 
@@ -462,8 +441,7 @@ const Billing = () => {
                   setIsBillFinalized(false); // Maybe re-enable or handle differently
               }
           } else {
-              // If response is NOT OK (4xx or 5xx), responseText holds the error body (HTML or JSON string)
-              // Attempt to parse the text as JSON anyway, in case the backend sends JSON errors
+
               try {
                   responseData = JSON.parse(responseText);
                   console.log("Finalize error response body parsed as JSON:", responseData);
@@ -692,16 +670,18 @@ const Billing = () => {
          </div>
       </div> 
 
-        {/* Display CustomerRef and PaymentRef if bill is finalized */}
-        {isBillFinalized && (customerRefId || paymentRefId) && (
-            <div className="mb-6 p-4 border rounded shadow-sm bg-yellow-50">
-                <h2 className="text-lg font-semibold mb-2 text-gray-800">Bill References:</h2>
-                {customerRefId && <p className="text-sm text-gray-700"><strong>Customer ID:</strong> {customerRefId}</p>}
-                 {/* Display the Bill ID (finalizedBillId) here as well */}
-                 {finalizedBillId && <p className="text-sm text-gray-700"><strong>Bill ID:</strong> {finalizedBillId}</p>}
-                {paymentRefId && <p className="text-sm text-gray-700"><strong>Payment ID:</strong> {paymentRefId}</p>}
-            </div>
-        )}
+        {/* Display CustomerRef and PaymentRef if bill is finalized */}
+        {isBillFinalized && (customerRefId || paymentRefId) && ( // Assuming state variables are customerRef and paymentRef holding the objects
+            <div className="mb-6 p-4 border rounded shadow-sm bg-yellow-50">
+                <h2 className="text-lg font-semibold mb-2 text-gray-800">Bill References:</h2>
+                {/* Access the _id property of the populated customerRef object */}
+                {customerRefId && customerRefId._id && <p className="text-sm text-gray-700"><strong>Customer ID:</strong> {customerRefId._id}</p>}
+                 {/* Display the Bill ID (finalizedBillId) here as well */}
+                 {finalizedBillId && <p className="text-sm text-gray-700"><strong>Bill ID:</strong> {finalizedBillId}</p>}
+                {/* Access the _id property of the populated paymentRef object */}
+                {paymentRefId && paymentRefId._id && <p className="text-sm text-gray-700"><strong>Payment ID:</strong> {paymentRefId._id}</p>}
+            </div>
+        )}
 
 
       {/* Action Buttons */}

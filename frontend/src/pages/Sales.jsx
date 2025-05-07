@@ -232,7 +232,7 @@ const Sales = () => {
                     <table className="min-w-full table-auto border text-sm">
                       <thead className="bg-gray-100">
                         <tr>
-                          <th className="border px-4 py-2">Part No</th>
+                          <th className="border px-4 py-2">Part Number</th>
                           <th className="border px-4 py-2">Name</th>
                           <th className="border px-4 py-2">Brand</th>
                           <th className="border px-4 py-2">Model</th>
@@ -372,7 +372,7 @@ const Sales = () => {
                       <table className="min-w-full table-auto border text-sm">
                         <thead className="bg-gray-100">
                           <tr>
-                            <th className="border px-3 py-1">Part No</th>
+                            <th className="border px-3 py-1">Part Number</th>
                             <th className="border px-3 py-1">Name</th>
                             <th className="border px-3 py-1">Brand</th>
                             <th className="border px-3 py-1">Model</th>
@@ -384,7 +384,7 @@ const Sales = () => {
                           {bill.items.map((item, idx) => (
                             <tr key={idx} className="hover:bg-gray-50">
                               {/* --- Individual Bills use a different structure, keep this as is --- */}
-                              <td className="border px-3 py-1">{item.product?.partNo || 'N/A'}</td>
+                              <td className="border px-3 py-1">{item.product?.partNumber || 'N/A'}</td>
                               <td className="border px-3 py-1">{item.product?.name || 'N/A'}</td>
                               <td className="border px-3 py-1">{item.product?.brand || 'N/A'}</td>
                               <td className="border px-3 py-1">{item.product?.model || 'N/A'}</td>

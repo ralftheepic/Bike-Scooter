@@ -7,11 +7,6 @@ const bulkOrderSchema = new mongoose.Schema({
   totalBillAmount: { type: Number, required: true, min: 0 },
   items: [{
     product: { type: ObjectId, ref: 'Product', required: true },
-    productId: String,
-    name: String,
-    brand: String,
-    model: String,
-    category: String,
     quantityReceived: { type: Number, required: true, min: 1 },
     purchasePrice: { type: Number, required: true, min: 0 },
   }],

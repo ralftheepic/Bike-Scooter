@@ -1,80 +1,65 @@
 import mongoose from 'mongoose';
+const { ObjectId } = mongoose.Schema.Types;
 
 const billingItemSchema = new mongoose.Schema({
-    productId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
-        required: true,
-    },
-    nameDescription: {
-        type: String,
-        required: true,
-    },
-    price: {
-        type: Number,
-        required: true,
-    },
-    quantity: {
-        type: Number,
-        required: true,
-        default: 1,
-        min: 1,
-    },
-    // Optionally add partNumber here if you want it in the bill item subdocument
-    partNumber: {
-         type: String,
-         required: false // Not all products may have a part number
-    }
+  product: {
+    type: ObjectId,
+    ref: 'Product',
+    required: true,
+  },
+  quantity: {
+    type: Number,
+    required: true,
+    min: 1,
+  },
+  price: {
+    type: Number,
+    required: true, // Store the price at the time of billing
+  },
 });
 
-const billingSchema = new mongoose.Schema(
-    {
-        customerName: {
-            type: String,
-            required: true, // Keep required as it's needed for the bill document
-        },
-        customerPhoneNumber: {
-            type: String,
-            required: true, // Keep required as it's needed for the bill document and customer lookup
-        },
-        billingDate: {
-            type: Date,
-            required: true,
-        },
-        items: [billingItemSchema],
-        totalAmount: {
-            type: Number,
-            required: true,
-        },
-        isDraft: {
-            type: Boolean,
-            default: true, // By default, create draft bills
-        },
+const billingSchema = new mongoose.Schema({
+  customerName: {
+    type: String,
+    required: true,
+  },
+  customerPhoneNumber: {
+    type: String,
+    required: true,
+  },
+  billingDate: {
+    type: Date,
+    required: true,
+  },
+  items: [billingItemSchema],
+  totalAmount: {
+    type: Number,
+    required: true,
+  },
+  isDraft: {
+    type: Boolean,
+    default: true,
+  },
+  customerRef: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Customer',
+    required: false,
+  },
+  paymentRef: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Payment',
+    required: false,
+  },
+  finalizedAt: {
+    type: Date,
+    required: false,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+}, { timestamps: true });
 
-        // Add references to the Customer and Payment collections
-        customerRef: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Customer', // Reference the 'Customer' model
-            required: false, // Not required for drafts, only for finalized bills
-        },
-         paymentRef: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Payment', // Reference the 'Payment' model
-            required: false, // Only set for finalized bills
-        },
-        finalizedAt: { // Add a timestamp for when the bill was finalized
-             type: Date,
-             required: false // Only set when isDraft becomes false
-        },
-
-        createdAt: {
-            type: Date,
-            default: Date.now,
-        },
-    },
-    { timestamps: true } // Keeps track of createdAt and updatedAt
-);
-
-const Billing = mongoose.model('Billing', billingSchema, 'billing'); // 'billing' is the collection name
+const Billing = mongoose.model('Billing', billingSchema, 'billing');
 
 export default Billing;

@@ -4,10 +4,10 @@ import logger from '../utils/logger.js';
 
 const addProduct = async (req, res) => {
   console.log('Received request body:', req.body); // Log the request body
-  const { name, brand, model,partno, category, price, quantity, description, images } = req.body;
+  const { name, brand, model,partNumber, category, price, quantity, description, images } = req.body;
 
   try {
-    const existingProduct = await Product.findOne({ name, brand, model,partno });
+    const existingProduct = await Product.findOne({ name, brand, model,partNumber });
 
     if (existingProduct) {
       logger.info('Product already exists:', existingProduct); 
@@ -20,7 +20,7 @@ const addProduct = async (req, res) => {
         name,
         brand,
         model,
-        partno,
+        partNumber,
         category,
         price,
         quantity,

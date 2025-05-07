@@ -32,7 +32,7 @@ export const addBulkOrder = async (req, res) => {
           category: item.category,
           quantity: item.quantityReceived,
           price: item.purchasePrice,
-          partNo: item.partNo || '',
+          partNumber: item.partNumber,
         });
       }
 

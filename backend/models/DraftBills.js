@@ -3,12 +3,12 @@ import mongoose from 'mongoose';
 const draftBillSchema = new mongoose.Schema({
   customerName: { type: String, required: true },
   customerPhoneNumber: { type: String },
-  billingDate: { type: String, required: true },
+  billingDate: { type: Date, required: true },
   items: [{
-    productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+    product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product',required: false },
     nameDescription: String,
-    price: Number,
     quantity: Number,
+    price: Number,
     partNumber: String,
   }],
   totalAmount: { type: Number, required: true },

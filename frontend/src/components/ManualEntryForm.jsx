@@ -276,6 +276,10 @@ const ManualEntryForm = ({ onBulkOrderAdded }) => {
 
       if (response.ok) {
         const addedOrder = await response.json();
+        // ManualEntryForm.jsx:279 Uncaught (in promise) TypeError: Failed to execute 'json' 
+        // on 'Response': body stream already read
+        //at handleSubmit (ManualEntryForm.jsx:279:30)
+
         console.log(response.json())
         setSuccessMessage('Bulk order added successfully!');
         setErrorMessage('');
