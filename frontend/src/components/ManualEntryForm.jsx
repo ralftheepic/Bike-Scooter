@@ -1,5 +1,84 @@
 import React, { useState } from 'react';
 
+const autoPartNames = [
+  'Accelerator cable (Throttle cable)',
+  'Air filter',
+  'Alloy wheels',
+  'Axle',
+  'Battery',
+  'Brake caliper',
+  'Brake cables',
+  'Brake disc (disc rotor)',
+  'Brake drum',
+  'Brake fluid reservoir',
+  'Brake lever',
+  'Brake light switch',
+  'Brake pads',
+  'Brake pedal',
+  'Brake shoes',
+  'Camshaft',
+  'Carburetor / Fuel injector',
+  'CDI unit',
+  'Chain cover',
+  'Chain sprockets (front & rear)',
+  'Chain tensioner',
+  'Chassis/frame',
+  'Clutch cable',
+  'Clutch lever',
+  'Clutch plate',
+  'Crash guard',
+  'Crankshaft',
+  'Cylinder head',
+  'Drive chain / Belt',
+  'Engine block',
+  'Fairing / Windshield (for some bikes)',
+  'Foot pegs',
+  'Foot rest',
+  'Front fork',
+  'Fuel lines',
+  'Fuel pump',
+  'Fuel tank',
+  'Fuel tank cap',
+  'Fuel tap (petcock)',
+  'Fuse box',
+  'Gear shift lever',
+  'Gearbox',
+  'Grab rail',
+  'Handlebar',
+  'Headlight',
+  'Horn',
+  'Ignition switch',
+  'Kick starter / Electric starter',
+  'Kickstand sensor',
+  'Lock set (ignition, fuel, seat)',
+  'Master cylinder',
+  'Mudguard (front/rear)',
+  'Number plate bracket',
+  'Odometer',
+  'Oil filter',
+  'Piston',
+  'Rear shock absorber',
+  'Rearview mirrors',
+  'Regulator/rectifier',
+  'Seat',
+  'Side panels',
+  'Side stand / Main stand',
+  'Side stand switch',
+  'Spark plug',
+  'Speedometer',
+  'Spoke wheels',
+  'Swing arm',
+  'Tail light',
+  'Timing chain/belt',
+  'Tires',
+  'Turn signal indicators',
+  'Universal Item',
+  'Valves',
+  'Wheel bearings',
+  'Wheel rim',
+  'Wiring harness'
+];
+
 const brandOptions = [
   'Amaron',
   'Bajaj',
@@ -276,11 +355,7 @@ const ManualEntryForm = ({ onBulkOrderAdded }) => {
 
       if (response.ok) {
         const addedOrder = await response.json();
-        // ManualEntryForm.jsx:279 Uncaught (in promise) TypeError: Failed to execute 'json' 
-        // on 'Response': body stream already read
-        //at handleSubmit (ManualEntryForm.jsx:279:30)
-
-        console.log(response.json())
+        console.log('Bulk order added:', addedOrder);
         setSuccessMessage('Bulk order added successfully!');
         setErrorMessage('');
         if (onBulkOrderAdded) onBulkOrderAdded(addedOrder);
@@ -357,7 +432,13 @@ const ManualEntryForm = ({ onBulkOrderAdded }) => {
           <h3 className="text-lg font-semibold mb-2">Add Product</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
             <input placeholder="ID" value={newProductId} onChange={(e) => setNewProductId(e.target.value)} className="border px-2 py-1 rounded" />
-            <input placeholder="Name" value={newProductName} onChange={(e) => setNewProductName(e.target.value)} className="border px-2 py-1 rounded" />
+            
+            <select value={newProductName} onChange={(e) => setNewProductName(e.target.value)} className="border px-2 py-1 rounded">
+              <option value="">Select Part Name</option>
+                  {autoPartNames.map((part) => (
+                  <option key={part} value={part}>{part}</option>
+                  ))} 
+            </select>
             <select value={newProductBrand} onChange={handleBrandChange} className="border px-2 py-1 rounded">
               <option value="">Select Brand</option>
               {brandOptions.map((brand) => <option key={brand} value={brand}>{brand}</option>)}

@@ -7,6 +7,7 @@ import logger from '../utils/logger.js';
 import mongoose from 'mongoose';
 
 // Helper function to handle Customer and Payment linking
+// Modified to return the customer document
 const handleCustomerAndPaymentLinking = async (billData, savedBillId, session) => {
      logger.info(`Starting customer and payment linking for bill ID: ${savedBillId}`);
      const { customerName, customerPhoneNumber, billingDate, totalAmount, paymentMethod } = billData;
@@ -22,7 +23,7 @@ const handleCustomerAndPaymentLinking = async (billData, savedBillId, session) =
          if (!customer) {
              logger.info(`Customer not found for phone number ${customerPhoneNumber}, creating new customer.`);
              customer = new Customer({
-                 name: customerName,
+                 name: customerName, // Use name from billData for new customer
                  phoneNumber: customerPhoneNumber,
                  latestBillingDate: billingDate,
              });
@@ -47,8 +48,8 @@ const handleCustomerAndPaymentLinking = async (billData, savedBillId, session) =
          const payment = new Payment({
              billingId: savedBillId,
              customerId: customerId,
-             customerName: customer.name,
-             customerPhoneNumber: customer.phoneNumber,
+             customerName: customer.name, // Use canonical name from Customer document
+             customerPhoneNumber: customer.phoneNumber, // Use canonical phone from Customer document
              billingDate: billingDate,
              totalAmount: totalAmount,
              paymentMethod: paymentMethod,
@@ -59,16 +60,18 @@ const handleCustomerAndPaymentLinking = async (billData, savedBillId, session) =
          logger.info(`Payment record created with ID: ${paymentId} for bill ID: ${savedBillId}`);
 
          // Update the Bill document with customer and payment references and finalized date
+         // We will update customerName/PhoneNumber on the Bill document in the saveBill function
          await Bill.findByIdAndUpdate(savedBillId, {
              customerRef: customerId,
              paymentRef: paymentId,
              finalizedAt: new Date(),
-         }, { session, new: true }); // Use {new: true} to return the updated document (optional here)
+         }, { session, new: true });
 
 
          logger.info(`Bill ID ${savedBillId} updated with customerRef ${customerId} and paymentRef ${paymentId}`);
 
-         return { customerRef: customerId, paymentRef: paymentId }; // Return the created refs
+         // Return the customer document along with the refs
+         return { customerRef: customerId, paymentRef: paymentId, customer: customer };
 
      } catch (error) {
          logger.error(`Error during customer/payment linking for bill ID ${savedBillId}:`, error);
@@ -189,6 +192,8 @@ export const saveBill = async (req, res) => {
     // --- End Item Mapping and Validation ---
 
 
+    // For drafts, use the customer name and phone from the request body
+    // For finalized bills, these will be updated later with canonical data
     const newBill = new BillModel({
       customerName,
       customerPhoneNumber,
@@ -209,15 +214,27 @@ export const saveBill = async (req, res) => {
 
       try {
         // handleCustomerAndPaymentLinking now expects the saved Bill ID
-        const { customerRef, paymentRef } = await handleCustomerAndPaymentLinking({
+        // It also returns the customer document
+        const { customerRef, paymentRef, customer } = await handleCustomerAndPaymentLinking({
           ...req.body, // Pass original request body for customer/payment details
-          totalAmount: calculatedTotalAmount // Use calculated total
+          totalAmount: calculatedTotalAmount
         }, savedBill._id, session);
 
-        // Update the savedBill document in memory (optional but good for response)
+        // Update the savedBill object in memory with canonical customer data
         savedBill.customerRef = customerRef;
         savedBill.paymentRef = paymentRef;
         savedBill.finalizedAt = new Date();
+        // Use the canonical name and phone number from the Customer document
+        savedBill.customerName = customer.name;
+        savedBill.customerPhoneNumber = customer.phoneNumber;
+
+        // Since we updated fields on the savedBill object in memory,
+        // we need to explicitly save these changes to the database.
+        // Alternatively, the findByIdAndUpdate in handleCustomerAndPaymentLinking could be modified
+        // to include customerName and customerPhoneNumber updates, but this approach is also valid.
+        await savedBill.save({ session });
+        logger.info(`Saved canonical customer data to finalized bill ID: ${savedBill._id}`);
+
 
         // --- Stock Update ---
         logger.info(`Updating stock for directly finalized bill ID: ${savedBill._id}`);
@@ -263,7 +280,8 @@ export const saveBill = async (req, res) => {
     await session.commitTransaction();
     session.endSession();
 
-    // Return the saved bill (which now includes customerRef, paymentRef, finalizedAt if finalized)
+    // Return the saved bill (which now includes customerRef, paymentRef, finalizedAt if finalized,
+    // and the canonical customerName/customerPhoneNumber)
     res.status(201).json(savedBill);
 
   } catch (error) {
@@ -296,7 +314,6 @@ export const saveBill = async (req, res) => {
     res.status(500).json({ message: 'Internal server error saving bill', error: error.message });
   }
 };
-
 
 
 // Get ALL Draft Bills
@@ -446,9 +463,10 @@ const finalizeBill = async (req, res) => {
 
 
       // 2. Create a new finalized bill in the 'Billing' collection using the mapped items
+      // Customer name and phone will be updated after linking
       const finalizedBill = new Bill({
-        customerName: draftBill.customerName,
-        customerPhoneNumber: draftBill.customerPhoneNumber,
+        customerName: draftBill.customerName, // Temporary, will be overwritten
+        customerPhoneNumber: draftBill.customerPhoneNumber, // Temporary, will be overwritten
         billingDate: draftBill.billingDate,
         items: itemsForFinalizedBill, // Use the correctly mapped and validated items
         totalAmount: draftBill.totalAmount, // Use total from draft (already validated by saveBill)
@@ -464,8 +482,9 @@ const finalizeBill = async (req, res) => {
       try {
           // Pass necessary data including paymentMethod to the helper
           // Use data from the original draft bill and the paymentMethod from req.body
-          await handleCustomerAndPaymentLinking({
-            customerName: draftBill.customerName,
+          // Capture the returned customer object
+          const { customerRef, paymentRef, customer } = await handleCustomerAndPaymentLinking({
+            customerName: draftBill.customerName, // Use draft name for potential new customer creation
             customerPhoneNumber: draftBill.customerPhoneNumber,
             billingDate: draftBill.billingDate,
             totalAmount: draftBill.totalAmount,
@@ -474,10 +493,17 @@ const finalizeBill = async (req, res) => {
 
           logger.info(`Customer and payment linking completed for finalized bill ID: ${savedFinalizedBill._id}`);
 
-          // Note: The handleCustomerAndPaymentLinking helper updates the Bill document directly.
-          // savedFinalizedBill object in memory might not have the refs populated unless refetched.
-          // If you need the refs in the response, you might refetch the bill here.
-          // const finalBillToSend = await Bill.findById(savedFinalizedBill._id).session(session);
+          // Update the savedFinalizedBill object in memory with canonical customer data
+          savedFinalizedBill.customerRef = customerRef;
+          savedFinalizedBill.paymentRef = paymentRef;
+          savedFinalizedBill.finalizedAt = new Date();
+          // Use the canonical name and phone number from the Customer document
+          savedFinalizedBill.customerName = customer.name;
+          savedFinalizedBill.customerPhoneNumber = customer.phoneNumber;
+
+          // Explicitly save the updated fields to the database within the transaction
+          await savedFinalizedBill.save({ session });
+          logger.info(`Saved canonical customer data to finalized bill ID: ${savedFinalizedBill._id}`);
 
 
       } catch(linkingError) {
@@ -505,20 +531,20 @@ const finalizeBill = async (req, res) => {
                   const error = new Error(`Product with ID ${item.product} not found during stock update.`);
                   error.isClientError = true; // Treat as client-side input issue (invalid product ID)
                   throw error; // This will be caught by the outer catch block
-              }
+            }
 
-              if (product.quantity < item.quantity) {
-                  logger.error(`Stock Update (Finalize): Insufficient stock for product ${item.product}. Required: ${item.quantity}, Available: ${product.quantity}. Bill ${savedFinalizedBill._id}`);
-                  const error = new Error(`Insufficient stock for product ${item.product}. Required: ${item.quantity}, Available: ${product.quantity}`);
-                  error.isClientError = true; // Treat as client-side input issue
-                  throw error; // This will be caught by the outer catch block
-              }
+            if (product.quantity < item.quantity) {
+                logger.error(`Stock Update (Finalize): Insufficient stock for product ${item.product}. Required: ${item.quantity}, Available: ${product.quantity}. Bill ${savedFinalizedBill._id}`);
+                const error = new Error(`Insufficient stock for product ${item.product}. Required: ${item.quantity}, Available: ${product.quantity}`);
+                error.isClientError = true; // Treat as client-side input issue
+                throw error; // This will be caught by the outer catch block
+            }
 
-              product.quantity -= item.quantity;
-              await product.save({ session });
-              logger.info(`Updated stock for product ${item.product} by -${item.quantity} for bill ${savedFinalizedBill._id}`);
-          }
-          logger.info(`Stock update processing completed for finalized bill ID: ${savedFinalizedBill._id}`);
+            product.quantity -= item.quantity;
+            await product.save({ session });
+            logger.info(`Updated stock for product ${item.product} by -${item.quantity} for bill ${savedFinalizedBill._id}`);
+        }
+        logger.info(`Stock update processing completed for finalized bill ID: ${savedFinalizedBill._id}`);
       } catch(stockError) {
           logger.error(`Stock Update Error (Finalize) for bill ID ${savedFinalizedBill._id} (from draft ${draftBillId}):`, stockError);
           // Transaction is aborted by stock update logic, just re-throw or handle gracefully
@@ -551,9 +577,6 @@ const finalizeBill = async (req, res) => {
       const finalBillToSend = await Bill.findById(savedFinalizedBill._id)
         .populate('customerRef')
         .populate('paymentRef');
-        // Removed .session(session) from the final fetch after commit,
-        // as the session might be implicitly ended after commit in some Mongoose versions/configurations.
-        // Fetching without the session here is generally safe after a successful commit.
 
 
       res.status(201).json(finalBillToSend);
